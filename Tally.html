@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SR Tally - Lite Edition</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    header { background: #004d99; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { margin: 0; font-size: 20px; }
+    nav button { margin: 0 5px; padding: 5px 10px; background: #fff; border: none; border-radius: 3px; cursor: pointer; }
+    nav button.active { background: #ffd700; font-weight: bold; }
+    .screen { display: none; padding: 20px; }
+    .active-screen { display: block; }
+    h2 { margin-top: 20px; }
+    label, select, input, button, textarea { display: block; margin: 10px 0; }
+    .section { border: 1px solid #ccc; padding: 15px; margin: 10px 0; }
+    ul { padding-left: 20px; }
+    .delete-btn { font-size: 14px; margin-left: 10px; color: red; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>SR Tally - Lite Edition</h1>
+    <nav>
+      <button onclick="showScreen('create')" class="active">Create</button>
+      <button onclick="showScreen('transactions')">Transactions</button>
+      <button onclick="showScreen('reports')">Reports</button>
+    </nav>
+  </header>
+
+  <div id="create" class="screen active-screen">
+    <div class="section">
+      <h2>Create Group</h2>
+      <input type="text" id="groupName" placeholder="Group Name">
+      <button onclick="addGroup()">Add Group</button>
+      <ul id="groupList"></ul>
+    </div>
+    <div class="section">
+      <h2>Create Ledger</h2>
+      <input type="text" id="ledgerName" placeholder="Ledger Name">
+      <select id="ledgerGroup">
+        <option value="">Select Group</option>
+      </select>
+      <button onclick="addLedger()">Add Ledger</button>
+      <ul id="ledgerList"></ul>
+    </div>
+  </div>
+
+  <div id="transactions" class="screen">
+    <div class="section">
+      <h2>Enter Voucher</h2>
+      <input type="date" id="voucherDate">
+      <label>Debit:</label>
+      <select id="debitLedger"></select>
+      <label>Credit:</label>
+      <select id="creditLedger"></select>
+      <input type="number" id="amount" placeholder="Amount">
+      <textarea id="narration" placeholder="Narration"></textarea>
+      <button onclick="addVoucher()">Add Voucher</button>
+      <ul id="voucherList"></ul>
+    </div>
+  </div>
+
+  <div id="reports" class="screen">
+    <div class="section">
+      <h2>Trial Balance</h2>
+      <button onclick="generateTrialBalance()">Generate</button>
+      <div id="trialBalance"></div>
+    </div>
+    <div class="section">
+      <h2>Day Book</h2>
+      <button onclick="generateDayBook()">Generate</button>
+      <div id="dayBook"></div>
+    </div>
+    <div class="section">
+      <h2>Balance Sheet</h2>
+      <button onclick="generateBalanceSheet()">Generate</button>
+      <div id="balanceSheet"></div>
+    </div>
+  </div>
+
+  <script>
+    const groups = JSON.parse(localStorage.getItem('groups') || '[]');
+    const ledgers = JSON.parse(localStorage.getItem('ledgers') || '[]');
+    const vouchers = JSON.parse(localStorage.getItem('vouchers') || '[]');
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+      document.getElementById(id).classList.add('active-screen');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      updateLists();
+    }
+
+    function saveData() {
+      localStorage.setItem('groups', JSON.stringify(groups));
+      localStorage.setItem('ledgers', JSON.stringify(ledgers));
+      localStorage.setItem('vouchers', JSON.stringify(vouchers));
+    }
+
+    function refreshDropdowns() {
+      const ledgerGroup = document.getElementById('ledgerGroup');
+      ledgerGroup.innerHTML = '<option value="">Select Group</option>';
+      groups.forEach(g => {
+        const opt = document.createElement('option');
+        opt.text = g;
+        opt.value = g;
+        ledgerGroup.add(opt);
+      });
+
+      ['debitLedger', 'creditLedger'].forEach(id => {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '';
+        ledgers.forEach(l => {
+          const opt = document.createElement('option');
+          opt.text = l.name;
+          sel.add(opt);
+        });
+      });
+    }
+
+    function updateLists() {
+      const groupList = document.getElementById('groupList');
+      groupList.innerHTML = '';
+      groups.forEach((g, i) => {
+        groupList.innerHTML += `<li>${g} <span class='delete-btn' onclick='deleteGroup(${i})'>&minus;</span></li>`;
+      });
+
+      const ledgerList = document.getElementById('ledgerList');
+      ledgerList.innerHTML = '';
+      ledgers.forEach((l, i) => {
+        ledgerList.innerHTML += `<li>${l.name} (${l.group}) <span class='delete-btn' onclick='deleteLedger(${i})'>&minus;</span></li>`;
+      });
+
+      const voucherList = document.getElementById('voucherList');
+      voucherList.innerHTML = '';
+      vouchers.forEach((v, i) => {
+        voucherList.innerHTML += `<li>${v.date}: ${v.debit} Dr ₹${v.amount} / ${v.credit} Cr - ${v.narration} <span class='delete-btn' onclick='deleteVoucher(${i})'>&minus;</span></li>`;
+      });
+
+      refreshDropdowns();
+      saveData();
+    }
+
+    function addGroup() {
+      const name = document.getElementById('groupName').value.trim();
+      if (name && !groups.includes(name)) {
+        groups.push(name);
+        document.getElementById('groupName').value = '';
+        updateLists();
+      }
+    }
+
+    function deleteGroup(i) {
+      groups.splice(i, 1);
+      updateLists();
+    }
+
+    function addLedger() {
+      const name = document.getElementById('ledgerName').value.trim();
+      const group = document.getElementById('ledgerGroup').value;
+      if (name && group && !ledgers.find(l => l.name === name)) {
+        ledgers.push({ name, group });
+        document.getElementById('ledgerName').value = '';
+        updateLists();
+      }
+    }
+
+    function deleteLedger(i) {
+      ledgers.splice(i, 1);
+      updateLists();
+    }
+
+    function addVoucher() {
+      const date = document.getElementById('voucherDate').value;
+      const debit = document.getElementById('debitLedger').value;
+      const credit = document.getElementById('creditLedger').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const narration = document.getElementById('narration').value;
+      if (date && debit && credit && debit !== credit && amount > 0) {
+        vouchers.push({ date, debit, credit, amount, narration });
+        document.getElementById('voucherDate').value = '';
+        document.getElementById('amount').value = '';
+        document.getElementById('narration').value = '';
+        updateLists();
+      }
+    }
+
+    function deleteVoucher(i) {
+      vouchers.splice(i, 1);
+      updateLists();
+    }
+
+    function generateTrialBalance() {
+      const balances = {};
+      ledgers.forEach(l => balances[l.name] = 0);
+      vouchers.forEach(v => {
+        balances[v.debit] += v.amount;
+        balances[v.credit] -= v.amount;
+      });
+
+      let html = '<table><tr><th>Ledger</th><th>Dr</th><th>Cr</th></tr>';
+      let totalDr = 0, totalCr = 0;
+      for (const l in balances) {
+        const amt = balances[l];
+        if (amt > 0) {
+          html += `<tr><td>${l}</td><td>${amt.toFixed(2)}</td><td></td></tr>`;
+          totalDr += amt;
+        } else if (amt < 0) {
+          html += `<tr><td>${l}</td><td></td><td>${(-amt).toFixed(2)}</td></tr>`;
+          totalCr += -amt;
+        }
+      }
+      html += `<tr><th>Total</th><th>${totalDr.toFixed(2)}</th><th>${totalCr.toFixed(2)}</th></tr></table>`;
+      document.getElementById("trialBalance").innerHTML = html;
+    }
+
+    function generateDayBook() {
+      let html = '<table><tr><th>Date</th><th>Debit</th><th>Credit</th><th>Amount</th><th>Narration</th></tr>';
+      vouchers.forEach(v => {
+        html += `<tr><td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>${v.amount}</td><td>${v.narration}</td></tr>`;
+      });
+      html += '</table>';
+      document.getElementById("dayBook").innerHTML = html;
+    }
+
+    function generateBalanceSheet() {
+      const balances = {};
+      ledgers.forEach(l => balances[l.name] = 0);
+      vouchers.forEach(v => {
+        balances[v.debit] += v.amount;
+        balances[v.credit] -= v.amount;
+      });
+
+      let html = '<table><tr><th>Assets</th><th>Liabilities</th></tr>';
+      const assets = [], liabilities = [];
+      for (const l in balances) {
+        const amt = balances[l];
+        if (amt > 0) assets.push(`${l}: ₹${amt.toFixed(2)}`);
+        else if (amt < 0) liabilities.push(`${l}: ₹${(-amt).toFixed(2)}`);
+      }
+      const maxLen = Math.max(assets.length, liabilities.length);
+      for (let i = 0; i < maxLen; i++) {
+        html += `<tr><td>${assets[i] || ''}</td><td>${liabilities[i] || ''}</td></tr>`;
+      }
+      html += '</table>';
+      document.getElementById("balanceSheet").innerHTML = html;
+    }
+
+    updateLists();
+  </script>
+</body>
+</html>
