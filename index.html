@@ -2,255 +2,652 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SR Tally - Lite Edition</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    header { background: #004d99; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-    header h1 { margin: 0; font-size: 20px; }
-    nav button { margin: 0 5px; padding: 5px 10px; background: #fff; border: none; border-radius: 3px; cursor: pointer; }
-    nav button.active { background: #ffd700; font-weight: bold; }
-    .screen { display: none; padding: 20px; }
-    .active-screen { display: block; }
-    h2 { margin-top: 20px; }
-    label, select, input, button, textarea { display: block; margin: 10px 0; }
-    .section { border: 1px solid #ccc; padding: 15px; margin: 10px 0; }
-    ul { padding-left: 20px; }
-    .delete-btn { font-size: 14px; margin-left: 10px; color: red; cursor: pointer; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
-  </style>
+  <title>SWIFT RECORDS</title>
+  
+ <style>
+  /* Reset & Base */
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f4ff, #d9e2ff);
+    color: #333;
+  }
+
+  /* Header */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(90deg, #0052cc, #003d99);
+    color: #f0f5ff;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 45, 102, 0.6);
+    z-index: 10;
+  }
+
+  header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .info span {
+    margin-left: 20px;
+    color: #ffde59;
+    font-size: 14px;
+    font-weight: 600;
+    text-shadow: 0 0 3px rgba(255, 222, 89, 0.7);
+  }
+
+  /* Menu toggle (mobile) */
+  .menu-toggle {
+    display: none;
+    cursor: pointer;
+    font-size: 28px;
+    margin-right: 12px;
+    color: #f0f5ff;
+    user-select: none;
+  }
+
+  /* Navigation menu */
+  nav.menu {
+    position: fixed;
+    top: 60px; left: 0; bottom: 0;
+    width: 220px;
+    background: #ffffff;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 15px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    transition: background 0.3s ease;
+    border-right: 2px solid #004d99;
+  }
+
+  nav.menu button {
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #e6f0ff, #cce0ff);
+    border: 1px solid #99b3ff;
+    border-radius: 8px;
+    text-align: left;
+    cursor: pointer;
+    font-weight: 600;
+    color: #003d99;
+    box-shadow: inset 0 0 5px rgba(0, 61, 153, 0.2);
+    transition: 
+      background 0.3s ease,
+      color 0.3s ease,
+      box-shadow 0.3s ease;
+    user-select: none;
+  }
+
+  nav.menu button:hover,
+  nav.menu button.active {
+    background: linear-gradient(135deg, #0052cc, #003d99);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 82, 204, 0.6);
+    border-color: #002966;
+  }
+
+  /* Screens / content */
+  .screen {
+    display: none;
+    padding: 24px 30px;
+    margin-left: 240px;
+    margin-top: 60px;
+    width: calc(100% - 240px);
+    background: #fff;
+    border-radius: 12px 0 0 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    min-height: calc(100vh - 80px);
+  }
+
+  .visible {
+    display: block;
+  }
+
+  /* Form controls */
+  input, select, button, textarea {
+    display: block;
+    margin: 12px 0;
+    padding: 10px 14px;
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1.5px solid #c1c9ff;
+    border-radius: 8px;
+    background: #f9fbff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline-offset: 2px;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #0052cc;
+    box-shadow: 0 0 8px rgba(0, 82, 204, 0.4);
+    background: #fff;
+  }
+
+  button {
+    background: linear-gradient(135deg, #004d99, #0066ff);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 3px 8px rgba(0, 102, 255, 0.6);
+    user-select: none;
+    max-width: 200px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  button:hover {
+    background: linear-gradient(135deg, #003366, #0052cc);
+    box-shadow: 0 5px 14px rgba(0, 102, 255, 0.8);
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  th, td {
+    border-bottom: 1px solid #e1e7ff;
+    padding: 12px 18px;
+    text-align: left;
+    color: #222f55;
+  }
+
+  th {
+    background: linear-gradient(90deg, #0073e6, #0052cc);
+    color: white;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  tr:hover {
+    background: #f0f5ff;
+  }
+
+  /* Delete button */
+  .delete-btn {
+    color: #d93025;
+    margin-left: 14px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    user-select: none;
+    transition: color 0.3s ease;
+  }
+
+  .delete-btn:hover {
+    color: #a6211f;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav.menu {
+      position: fixed;
+      top: 60px;
+      left: -240px;
+      width: 220px;
+      height: calc(100% - 60px);
+      background: #f0f4ff;
+      border-right: 2px solid #004d99;
+      transition: left 0.3s ease;
+      box-shadow: 2px 0 12px rgba(0, 45, 102, 0.2);
+      z-index: 1000;
+    }
+
+    nav.menu.open {
+      left: 0;
+    }
+
+    .screen {
+      margin-left: 0;
+      margin-top: 80px;
+      width: 100%;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .menu-toggle {
+      display: block;
+      color: #0052cc;
+    }
+  }
+</style>
+
+
 </head>
 <body>
-  <header>
-    <h1>Swift Records Tallie</h1>
-    <nav>
-      <button onclick="showScreen('create')" class="active">Create</button>
-      <button onclick="showScreen('transactions')">Transactions</button>
-      <button onclick="showScreen('reports')">Reports</button>
-    </nav>
-  </header>
 
-  <div id="create" class="screen active-screen">
-    <div class="section">
-      <h2>Create Group</h2>
-      <input type="text" id="groupName" placeholder="Group Name">
-      <button onclick="addGroup()">Add Group</button>
-      <ul id="groupList"></ul>
-    </div>
-    <div class="section">
-      <h2>Create Ledger</h2>
-      <input type="text" id="ledgerName" placeholder="Ledger Name">
-      <select id="ledgerGroup">
-        <option value="">Select Group</option>
-      </select>
-      <button onclick="addLedger()">Add Ledger</button>
-      <ul id="ledgerList"></ul>
-    </div>
+<header>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <h2>SWIFT RECORDS</h2>
+  <div class="info">
+    <span id="currentCompany"></span>
+    <span id="currentYear"></span>
   </div>
+</header>
 
-  <div id="transactions" class="screen">
-    <div class="section">
-      <h2>Enter Voucher</h2>
-      <input type="date" id="voucherDate">
-      <label>Debit:</label>
-      <select id="debitLedger"></select>
-      <label>Credit:</label>
-      <select id="creditLedger"></select>
-      <input type="number" id="amount" placeholder="Amount">
-      <textarea id="narration" placeholder="Narration"></textarea>
-      <button onclick="addVoucher()">Add Voucher</button>
-      <ul id="voucherList"></ul>
-    </div>
-  </div>
+<nav id="sideMenu" class="menu">
+  <button onclick="showScreen('companyScreen')">Company</button>
+  <button onclick="showScreen('yearScreen')">Year</button>
+  <button onclick="showScreen('groupScreen')">Groups</button>
+  <button onclick="showScreen('ledgerScreen')">Ledgers</button>
+  <button onclick="showScreen('voucherScreen')">Vouchers</button>
+  <button onclick="showScreen('inventoryScreen')">Inventory</button>
+  <button onclick="showScreen('daybookScreen'); renderDaybook();">Daybook</button>
+  <button onclick="showScreen('reportsScreen'); showReports();">Reports</button>
+</nav>
 
-  <div id="reports" class="screen">
-    <div class="section">
-      <h2>Trial Balance</h2>
-      <button onclick="generateTrialBalance()">Generate</button>
-      <div id="trialBalance"></div>
-    </div>
-    <div class="section">
-      <h2>Day Book</h2>
-      <button onclick="generateDayBook()">Generate</button>
-      <div id="dayBook"></div>
-    </div>
-    <div class="section">
-      <h2>Balance Sheet</h2>
-      <button onclick="generateBalanceSheet()">Generate</button>
-      <div id="balanceSheet"></div>
-    </div>
-  </div>
+<!-- Company -->
+<section id="companyScreen" class="screen">
+  <h3>Company</h3>
+  <input id="companyName" placeholder="Company Name">
+  <button onclick="createCompany()">Create</button>
+  <ul id="companyList"></ul>
+</section>
 
-  <script>
-    const groups = JSON.parse(localStorage.getItem('groups') || '[]');
-    const ledgers = JSON.parse(localStorage.getItem('ledgers') || '[]');
-    const vouchers = JSON.parse(localStorage.getItem('vouchers') || '[]');
+<!-- Year -->
+<section id="yearScreen" class="screen">
+  <h3>Financial Year</h3>
+  <input id="yearInput" placeholder="e.g., 2024-25">
+  <button onclick="addYear()">Add Year</button>
+  <ul id="yearList"></ul>
+</section>
 
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-      document.getElementById(id).classList.add('active-screen');
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-      updateLists();
-    }
+<!-- Groups -->
+<section id="groupScreen" class="screen">
+  <h3>Groups</h3>
+  <input id="groupName" placeholder="Group Name">
+  <button onclick="addGroup()">Add</button>
+  <ul id="groupList"></ul>
+</section>
 
-    function saveData() {
-      localStorage.setItem('groups', JSON.stringify(groups));
-      localStorage.setItem('ledgers', JSON.stringify(ledgers));
-      localStorage.setItem('vouchers', JSON.stringify(vouchers));
-    }
+<!-- Ledgers -->
+<section id="ledgerScreen" class="screen">
+  <h3>Ledgers</h3>
+  <input id="ledgerName" placeholder="Ledger Name">
+  <select id="ledgerGroup"></select>
+  <button onclick="addLedger()">Add</button>
+  <ul id="ledgerList"></ul>
+</section>
 
-    function refreshDropdowns() {
-      const ledgerGroup = document.getElementById('ledgerGroup');
-      ledgerGroup.innerHTML = '<option value="">Select Group</option>';
-      groups.forEach(g => {
-        const opt = document.createElement('option');
-        opt.text = g;
-        opt.value = g;
-        ledgerGroup.add(opt);
-      });
+<!-- Vouchers -->
+<section id="voucherScreen" class="screen">
+  <h3>Vouchers</h3>
+  <select id="debit"></select>
+  <select id="credit"></select>
+  <input id="amount" placeholder="Amount" type="number">
+  <input id="voucherDate" type="date">
+  <button onclick="addVoucher()">Add</button>
+  <ul id="voucherList"></ul>
+</section>
 
-      ['debitLedger', 'creditLedger'].forEach(id => {
-        const sel = document.getElementById(id);
-        sel.innerHTML = '';
-        ledgers.forEach(l => {
-          const opt = document.createElement('option');
-          opt.text = l.name;
-          sel.add(opt);
-        });
-      });
-    }
+<!-- Inventory -->
+<section id="inventoryScreen" class="screen">
+  <h3>Inventory</h3>
+  <input id="itemName" placeholder="Item Name">
+  <input id="itemQty" type="number" placeholder="Qty">
+  <input id="itemRate" type="number" placeholder="Rate">
+  <input id="itemUnit" placeholder="Unit">
+  <button onclick="addItem()">Add</button>
+  <ul id="inventoryList"></ul>
+</section>
 
-    function updateLists() {
-      const groupList = document.getElementById('groupList');
-      groupList.innerHTML = '';
-      groups.forEach((g, i) => {
-        groupList.innerHTML += `<li>${g} <span class='delete-btn' onclick='deleteGroup(${i})'>&minus;</span></li>`;
-      });
 
-      const ledgerList = document.getElementById('ledgerList');
-      ledgerList.innerHTML = '';
-      ledgers.forEach((l, i) => {
-        ledgerList.innerHTML += `<li>${l.name} (${l.group}) <span class='delete-btn' onclick='deleteLedger(${i})'>&minus;</span></li>`;
-      });
+<!-- Daybook -->
+<section id="daybookScreen" class="screen">
+  <h3>Daybook</h3>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Debit</th><th>Credit</th><th>Amount</th></tr>
+    </thead>
+    <tbody id="daybookTable"></tbody>
+  </table>
+</section>
 
-      const voucherList = document.getElementById('voucherList');
-      voucherList.innerHTML = '';
-      vouchers.forEach((v, i) => {
-        voucherList.innerHTML += `<li>${v.date}: ${v.debit} Dr ₹${v.amount} / ${v.credit} Cr - ${v.narration} <span class='delete-btn' onclick='deleteVoucher(${i})'>&minus;</span></li>`;
-      });
+<!-- Reports -->
+<section id="reportsScreen" class="screen">
+  <h3>Reports</h3>
+  <div id="trialBalance"></div>
+  <div id="pl"></div>
+  <div id="balanceSheet"></div>
+  <div id="inventoryReport"></div>
+</section>
 
-      refreshDropdowns();
-      saveData();
-    }
+<script>
+function toggleMenu() {
+  document.getElementById('sideMenu').classList.toggle('open');
+}
 
-    function addGroup() {
-      const name = document.getElementById('groupName').value.trim();
-      if (name && !groups.includes(name)) {
-        groups.push(name);
-        document.getElementById('groupName').value = '';
-        updateLists();
-      }
-    }
+let data = { companies: {} };
+let currentCompany = '';
+let currentYear = '';
 
-    function deleteGroup(i) {
-      groups.splice(i, 1);
-      updateLists();
-    }
+function save() {
+  localStorage.setItem('swiftData', JSON.stringify(data));
+}
+function load() {
+  const d = localStorage.getItem('swiftData');
+  if (d) data = JSON.parse(d);
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  if (id === 'companyScreen') renderCompanies();
+  if (id === 'yearScreen') renderYears();
+  if (id === 'groupScreen') renderGroups();
+  if (id === 'ledgerScreen') renderLedgers();
+  if (id === 'voucherScreen') renderVouchers();
+  if (id === 'inventoryScreen') renderItems();
+}
 
-    function addLedger() {
-      const name = document.getElementById('ledgerName').value.trim();
-      const group = document.getElementById('ledgerGroup').value;
-      if (name && group && !ledgers.find(l => l.name === name)) {
-        ledgers.push({ name, group });
-        document.getElementById('ledgerName').value = '';
-        updateLists();
-      }
-    }
+function createCompany() {
+  const name = document.getElementById('companyName').value.trim();
+  if (!name) return;
+  if (!data.companies[name]) data.companies[name] = { years: {} };
+  currentCompany = name;
+  save(); renderCompanies(); updateHeader();
+}
+function selectCompany(name) {
+  currentCompany = name; renderCompanies(); updateHeader();
+}
+function deleteCompany(name) {
+  delete data.companies[name];
+  if (currentCompany === name) currentCompany = '';
+  save(); renderCompanies(); updateHeader();
+}
+function renderCompanies() {
+  const ul = document.getElementById('companyList');
+  ul.innerHTML = '';
+  for (let name in data.companies) {
+    const li = document.createElement('li');
+    li.textContent = name + (name === currentCompany ? ' (selected)' : '');
+    const delBtn = document.createElement('span');
+    delBtn.textContent = ' [-]';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = () => deleteCompany(name);
+    const selBtn = document.createElement('button');
+    selBtn.textContent = 'Select';
+    selBtn.onclick = () => selectCompany(name);
+    li.appendChild(delBtn);
+    li.appendChild(selBtn);
+    ul.appendChild(li);
+  }
+}
+function updateHeader() {
+  document.getElementById('currentCompany').textContent = 'Company: ' + (currentCompany || 'None');
+  document.getElementById('currentYear').textContent = 'Year: ' + (currentYear || 'None');
+}
 
-    function deleteLedger(i) {
-      ledgers.splice(i, 1);
-      updateLists();
-    }
+function addYear() {
+  if (!currentCompany) return alert("Select company");
+  const y = document.getElementById('yearInput').value.trim();
+  if (!y) return;
+  const company = data.companies[currentCompany];
+  if (!company.years[y]) company.years[y] = { groups: [], ledgers: [], vouchers: [], inventory: [] };
+  currentYear = y;
+  save(); renderYears(); updateHeader();
+}
+function selectYear(y) {
+  currentYear = y;
+  updateHeader(); renderYears();
+}
+function deleteYear(y) {
+  delete data.companies[currentCompany].years[y];
+  if (currentYear === y) currentYear = '';
+  save(); renderYears(); updateHeader();
+}
+function renderYears() {
+  const ul = document.getElementById('yearList');
+  ul.innerHTML = '';
+  if (!currentCompany) return;
+  const yData = data.companies[currentCompany].years;
+  for (let y in yData) {
+    const li = document.createElement('li');
+    li.textContent = y + (y === currentYear ? ' (selected)' : '');
+    const delBtn = document.createElement('span');
+    delBtn.textContent = ' [-]';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = () => deleteYear(y);
+    const selBtn = document.createElement('button');
+    selBtn.textContent = 'Select';
+    selBtn.onclick = () => selectYear(y);
+    li.appendChild(delBtn);
+    li.appendChild(selBtn);
+    ul.appendChild(li);
+  }
+}
 
-    function addVoucher() {
-      const date = document.getElementById('voucherDate').value;
-      const debit = document.getElementById('debitLedger').value;
-      const credit = document.getElementById('creditLedger').value;
-      const amount = parseFloat(document.getElementById('amount').value);
-      const narration = document.getElementById('narration').value;
-      if (date && debit && credit && debit !== credit && amount > 0) {
-        vouchers.push({ date, debit, credit, amount, narration });
-        document.getElementById('voucherDate').value = '';
-        document.getElementById('amount').value = '';
-        document.getElementById('narration').value = '';
-        updateLists();
-      }
-    }
+function getYearData() {
+  if (!currentCompany || !currentYear) return null;
+  return data.companies[currentCompany].years[currentYear];
+}
 
-    function deleteVoucher(i) {
-      vouchers.splice(i, 1);
-      updateLists();
-    }
+function addGroup() {
+  const name = document.getElementById('groupName').value.trim();
+  const d = getYearData(); if (!name || !d) return;
+  d.groups.push(name); save(); renderGroups();
+}
+function renderGroups() {
+  const ul = document.getElementById('groupList');
+  const d = getYearData(); if (!d) return;
+  ul.innerHTML = '';
+  d.groups.forEach((g, i) => {
+    const li = document.createElement('li');
+    li.textContent = g;
+    const delBtn = document.createElement('span');
+    delBtn.textContent = ' [-]';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = () => {
+      d.groups.splice(i, 1);
+      save(); renderGroups(); renderLedgers(); renderVouchers(); showReports();
+    };
+    li.appendChild(delBtn);
+    ul.appendChild(li);
+  });
 
-    function generateTrialBalance() {
-      const balances = {};
-      ledgers.forEach(l => balances[l.name] = 0);
-      vouchers.forEach(v => {
-        balances[v.debit] += v.amount;
-        balances[v.credit] -= v.amount;
-      });
+  // Also update dropdowns
+  const ledgerGroupSelect = document.getElementById('ledgerGroup');
+  ledgerGroupSelect.innerHTML = '';
+  d.groups.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g;
+    opt.textContent = g;
+    ledgerGroupSelect.appendChild(opt);
+  });
+}
 
-      let html = '<table><tr><th>Ledger</th><th>Dr</th><th>Cr</th></tr>';
-      let totalDr = 0, totalCr = 0;
-      for (const l in balances) {
-        const amt = balances[l];
-        if (amt > 0) {
-          html += `<tr><td>${l}</td><td>${amt.toFixed(2)}</td><td></td></tr>`;
-          totalDr += amt;
-        } else if (amt < 0) {
-          html += `<tr><td>${l}</td><td></td><td>${(-amt).toFixed(2)}</td></tr>`;
-          totalCr += -amt;
-        }
-      }
-      html += `<tr><th>Total</th><th>${totalDr.toFixed(2)}</th><th>${totalCr.toFixed(2)}</th></tr></table>`;
-      document.getElementById("trialBalance").innerHTML = html;
-    }
+function addLedger() {
+  const name = document.getElementById('ledgerName').value.trim();
+  const group = document.getElementById('ledgerGroup').value;
+  const d = getYearData(); if (!name || !group || !d) return;
+  d.ledgers.push({ name, group });
+  save(); renderLedgers(); renderVouchers(); showReports();
+}
+function renderLedgers() {
+  const ul = document.getElementById('ledgerList');
+  const d = getYearData(); if (!d) return;
+  ul.innerHTML = '';
+  d.ledgers.forEach((l, i) => {
+    const li = document.createElement('li');
+    li.textContent = `${l.name} (${l.group})`;
+    const delBtn = document.createElement('span');
+    delBtn.textContent = ' [-]';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = () => {
+      d.ledgers.splice(i, 1);
+      save(); renderLedgers(); renderVouchers(); showReports();
+    };
+    li.appendChild(delBtn);
+    ul.appendChild(li);
+  });
 
-    function generateDayBook() {
-      let html = '<table><tr><th>Date</th><th>Debit</th><th>Credit</th><th>Amount</th><th>Narration</th></tr>';
-      vouchers.forEach(v => {
-        html += `<tr><td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>${v.amount}</td><td>${v.narration}</td></tr>`;
-      });
-      html += '</table>';
-      document.getElementById("dayBook").innerHTML = html;
-    }
+  // Update dropdowns
+  const debit = document.getElementById('debit');
+  const credit = document.getElementById('credit');
+  [debit, credit].forEach(select => select.innerHTML = '');
+  d.ledgers.forEach(l => {
+    [debit, credit].forEach(select => {
+      const opt = document.createElement('option');
+      opt.value = l.name;
+      opt.textContent = l.name;
+      select.appendChild(opt);
+    });
+  });
+}
 
-    function generateBalanceSheet() {
-      const balances = {};
-      ledgers.forEach(l => balances[l.name] = 0);
-      vouchers.forEach(v => {
-        balances[v.debit] += v.amount;
-        balances[v.credit] -= v.amount;
-      });
+function addVoucher() {
+  const debit = document.getElementById('debit').value;
+  const credit = document.getElementById('credit').value;
+  const amount = parseFloat(document.getElementById('amount').value);
+  const date = document.getElementById('voucherDate').value;
+  const d = getYearData(); if (!debit || !credit || !amount || !date || !d) return;
+  d.vouchers.push({ debit, credit, amount, date });
+  save(); renderVouchers(); showReports(); renderDaybook();
+}
+function renderVouchers() {
+  const ul = document.getElementById('voucherList');
+  const d = getYearData(); if (!d) return;
+  ul.innerHTML = '';
+  d.vouchers.forEach((v, i) => {
+    const li = document.createElement('li');
+    li.textContent = `${v.date}: ${v.debit} Dr <- ${v.credit} Cr = ₹${v.amount}`;
+    const delBtn = document.createElement('span');
+    delBtn.textContent = ' [-]';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = () => {
+      d.vouchers.splice(i, 1);
+      save(); renderVouchers(); showReports(); renderDaybook();
+    };
+    li.appendChild(delBtn);
+    ul.appendChild(li);
+  });
+}
 
-      let html = '<table><tr><th>Assets</th><th>Liabilities</th></tr>';
-      const assets = [], liabilities = [];
-      for (const l in balances) {
-        const amt = balances[l];
-        if (amt > 0) assets.push(`${l}: ₹${amt.toFixed(2)}`);
-        else if (amt < 0) liabilities.push(`${l}: ₹${(-amt).toFixed(2)}`);
-      }
-      const maxLen = Math.max(assets.length, liabilities.length);
-      for (let i = 0; i < maxLen; i++) {
-        html += `<tr><td>${assets[i] || ''}</td><td>${liabilities[i] || ''}</td></tr>`;
-      }
-      html += '</table>';
-      document.getElementById("balanceSheet").innerHTML = html;
-    }
+function addItem() {
+  const name = document.getElementById('itemName').value.trim();
+  const qty = parseFloat(document.getElementById('itemQty').value);
+  const rate = parseFloat(document.getElementById('itemRate').value);
+  const unit = document.getElementById('itemUnit').value.trim();
+  const d = getYearData(); if (!name || !qty || !rate || !unit || !d) return;
+  d.inventory.push({ name, qty, rate, unit });
+  save(); renderItems(); showReports();
+}
+function renderItems() {
+  const ul = document.getElementById('inventoryList');
+  const d = getYearData(); if (!d) return;
+  ul.innerHTML = '';
+  d.inventory.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.textContent = `${item.name}: ${item.qty} ${item.unit} @ ₹${item.rate}`;
+    const delBtn = document.createElement('span');
+    delBtn.textContent = ' [-]';
+    delBtn.className = 'delete-btn';
+    delBtn.onclick = () => {
+      d.inventory.splice(i, 1);
+      save(); renderItems(); showReports();
+    };
+    li.appendChild(delBtn);
+    ul.appendChild(li);
+  });
+}
 
-    updateLists();
-  </script>
+function showReports() {
+  const d = getYearData(); if (!d) return;
+
+  // Trial Balance
+  let tb = {};
+  d.ledgers.forEach(l => tb[l.name] = 0);
+  d.vouchers.forEach(v => {
+    tb[v.debit] += v.amount;
+    tb[v.credit] -= v.amount;
+  });
+
+  let tbHtml = '<h4>Trial Balance</h4><table><tr><th>Ledger</th><th>Debit</th><th>Credit</th></tr>';
+  for (let l in tb) {
+    const val = tb[l];
+    tbHtml += `<tr><td>${l}</td><td>${val > 0 ? val : ''}</td><td>${val < 0 ? -val : ''}</td></tr>`;
+  }
+  tbHtml += '</table>';
+  document.getElementById('trialBalance').innerHTML = tbHtml;
+
+  // P&L and Balance Sheet based on group names
+  const incomeGroups = ['Sales', 'Revenue', 'Income'];
+  const expenseGroups = ['Purchases', 'Expenses', 'Direct Expenses', 'Indirect Expenses'];
+  const assetGroups = ['Assets', 'Current Assets', 'Fixed Assets'];
+  const liabilityGroups = ['Capital', 'Loans', 'Liabilities'];
+
+  let income = 0, expense = 0;
+  let assets = 0, liabilities = 0;
+
+  d.ledgers.forEach(l => {
+    let total = 0;
+    d.vouchers.forEach(v => {
+      if (v.debit === l.name) total += v.amount;
+      if (v.credit === l.name) total -= v.amount;
+    });
+    if (incomeGroups.includes(l.group)) income += -total;
+    else if (expenseGroups.includes(l.group)) expense += total;
+    else if (assetGroups.includes(l.group)) assets += total;
+    else if (liabilityGroups.includes(l.group)) liabilities += -total;
+  });
+
+  const profit = income - expense;
+  if (profit > 0) liabilities += profit;
+  else assets += -profit;
+
+  document.getElementById('pl').innerHTML =
+    `<h4>Profit & Loss</h4>
+     <p>Income: ₹${income}</p>
+     <p>Expenses: ₹${expense}</p>
+     <p><b>Net ${profit >= 0 ? 'Profit' : 'Loss'}: ₹${Math.abs(profit)}</b></p>`;
+
+  document.getElementById('balanceSheet').innerHTML =
+    `<h4>Balance Sheet</h4>
+     <p>Assets: ₹${assets}</p>
+     <p>Liabilities: ₹${liabilities}</p>`;
+
+  // Inventory report
+  let invHtml = '<h4>Inventory Valuation</h4><table><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Total</th></tr>';
+  let totalVal = 0;
+  d.inventory.forEach(i => {
+    const val = i.qty * i.rate;
+    totalVal += val;
+    invHtml += `<tr><td>${i.name}</td><td>${i.qty}</td><td>${i.unit}</td><td>₹${i.rate}</td><td>₹${val}</td></tr>`;
+  });
+  invHtml += `<tr><td colspan="4"><b>Total</b></td><td><b>₹${totalVal}</b></td></tr></table>`;
+  document.getElementById('inventoryReport').innerHTML = invHtml;
+}
+
+function renderDaybook() {
+  const d = getYearData(); if (!d) return;
+  const tbody = document.getElementById('daybookTable');
+  tbody.innerHTML = '';
+  d.vouchers.forEach(v => {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>₹${v.amount}</td>`;
+    tbody.appendChild(row);
+  });
+}
+
+load(); updateHeader(); showScreen('companyScreen');
+</script>
+
 </body>
 </html>
