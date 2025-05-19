@@ -2,235 +2,136 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Critical viewport tag for mobile scaling -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>SWIFT RECORDS</title>
   
- <style>
-  /* Reset & Base */
+<style>
+  /* Base Mobile-First Styles */
   body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
-    background: linear-gradient(135deg, #f0f4ff, #d9e2ff);
+    background: #f0f4ff; /* Simpler than gradient for performance */
     color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* Header */
+  /* Header - Mobile Optimized */
   header {
     position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 60px;
-    background: linear-gradient(90deg, #0052cc, #003d99);
-    color: #f0f5ff;
+    top: 0;
+    width: 100%;
+    height: 56px;
+    background: #0052cc;
+    color: white;
     display: flex;
     align-items: center;
-    padding: 0 24px;
-    justify-content: space-between;
-    box-shadow: 0 2px 8px rgba(0, 45, 102, 0.6);
-    z-index: 10;
+    padding: 0 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 100;
   }
 
   header h2 {
     margin: 0;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
   }
 
-  .info span {
-    margin-left: 20px;
-    color: #ffde59;
-    font-size: 14px;
-    font-weight: 600;
-    text-shadow: 0 0 3px rgba(255, 222, 89, 0.7);
-  }
-
-  /* Menu toggle (mobile) */
   .menu-toggle {
-    display: none;
-    cursor: pointer;
-    font-size: 28px;
+    display: block;
+    font-size: 24px;
     margin-right: 12px;
-    color: #f0f5ff;
-    user-select: none;
+    background: none;
+    border: none;
+    color: white;
   }
 
-  /* Navigation menu */
+  /* Mobile-First Navigation */
   nav.menu {
     position: fixed;
-    top: 60px; left: 0; bottom: 0;
-    width: 220px;
-    background: #ffffff;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    padding: 15px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    top: 56px;
+    left: -100%;
+    width: 80%;
+    max-width: 280px;
+    height: calc(100vh - 56px);
+    background: white;
+    transition: left 0.3s ease;
     overflow-y: auto;
-    transition: background 0.3s ease;
-    border-right: 2px solid #004d99;
+    z-index: 1000;
+  }
+
+  nav.menu.open {
+    left: 0;
   }
 
   nav.menu button {
-    padding: 12px 15px;
-    background: linear-gradient(135deg, #e6f0ff, #cce0ff);
-    border: 1px solid #99b3ff;
-    border-radius: 8px;
-    text-align: left;
-    cursor: pointer;
-    font-weight: 600;
-    color: #003d99;
-    box-shadow: inset 0 0 5px rgba(0, 61, 153, 0.2);
-    transition: 
-      background 0.3s ease,
-      color 0.3s ease,
-      box-shadow 0.3s ease;
-    user-select: none;
-  }
-
-  nav.menu button:hover,
-  nav.menu button.active {
-    background: linear-gradient(135deg, #0052cc, #003d99);
-    color: #fff;
-    box-shadow: 0 4px 10px rgba(0, 82, 204, 0.6);
-    border-color: #002966;
-  }
-
-  /* Screens / content */
-  .screen {
-    display: none;
-    padding: 24px 30px;
-    margin-left: 240px;
-    margin-top: 60px;
-    width: calc(100% - 240px);
-    background: #fff;
-    border-radius: 12px 0 0 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-    min-height: calc(100vh - 80px);
-  }
-
-  .visible {
-    display: block;
-  }
-
-  /* Form controls */
-  input, select, button, textarea {
-    display: block;
-    margin: 12px 0;
-    padding: 10px 14px;
     width: 100%;
-    max-width: 420px;
-    box-sizing: border-box;
-    font-size: 16px;
-    font-weight: 500;
-    border: 1.5px solid #c1c9ff;
-    border-radius: 8px;
-    background: #f9fbff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    outline-offset: 2px;
+    padding: 12px 16px;
+    margin: 4px 0;
+    border: none;
+    background: #f8f9fa;
+    text-align: left;
+    font-size: 15px;
   }
 
-  input:focus, select:focus, textarea:focus {
-    border-color: #0052cc;
-    box-shadow: 0 0 8px rgba(0, 82, 204, 0.4);
-    background: #fff;
+  /* Mobile-Optimized Content */
+  .screen {
+    padding: 16px;
+    margin-top: 56px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Form Elements for Mobile */
+  input, select, button, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    -webkit-appearance: none;
   }
 
   button {
-    background: linear-gradient(135deg, #004d99, #0066ff);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-weight: 700;
-    box-shadow: 0 3px 8px rgba(0, 102, 255, 0.6);
-    user-select: none;
-    max-width: 200px;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  button:hover {
-    background: linear-gradient(135deg, #003366, #0052cc);
-    box-shadow: 0 5px 14px rgba(0, 102, 255, 0.8);
-  }
-
-  /* Tables */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  th, td {
-    border-bottom: 1px solid #e1e7ff;
-    padding: 12px 18px;
-    text-align: left;
-    color: #222f55;
-  }
-
-  th {
-    background: linear-gradient(90deg, #0073e6, #0052cc);
+    background: #0052cc;
     color: white;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    font-weight: bold;
   }
 
-  tr:hover {
-    background: #f0f5ff;
+  /* Tables - Horizontal Scroll on Mobile */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Delete button */
-  .delete-btn {
-    color: #d93025;
-    margin-left: 14px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    user-select: none;
-    transition: color 0.3s ease;
+  table {
+    min-width: 600px; /* Forces scroll on small screens */
   }
 
-  .delete-btn:hover {
-    color: #a6211f;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    nav.menu {
-      position: fixed;
-      top: 60px;
-      left: -240px;
-      width: 220px;
-      height: calc(100% - 60px);
-      background: #f0f4ff;
-      border-right: 2px solid #004d99;
-      transition: left 0.3s ease;
-      box-shadow: 2px 0 12px rgba(0, 45, 102, 0.2);
-      z-index: 1000;
-    }
-
-    nav.menu.open {
-      left: 0;
-    }
-
-    .screen {
-      margin-left: 0;
-      margin-top: 80px;
-      width: 100%;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
+  /* Desktop Overrides */
+  @media (min-width: 768px) {
     .menu-toggle {
-      display: block;
-      color: #0052cc;
+      display: none;
+    }
+    
+    nav.menu {
+      left: 0;
+      width: 220px;
+    }
+    
+    .screen {
+      margin-left: 220px;
+      width: calc(100% - 220px);
     }
   }
 </style>
-
-
 </head>
 <body>
 
@@ -645,7 +546,24 @@ function renderDaybook() {
     tbody.appendChild(row);
   });
 }
-
+ // Better touch feedback
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('touchstart', () => {
+        btn.style.opacity = '0.8';
+      });
+      btn.addEventListener('touchend', () => {
+        btn.style.opacity = '1';
+      });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth < 768 && 
+          !e.target.closest('nav.menu') && 
+          !e.target.closest('.menu-toggle')) {
+        document.getElementById('sideMenu').classList.remove('open');
+      }
+    });
 load(); updateHeader(); showScreen('companyScreen');
 </script>
 
