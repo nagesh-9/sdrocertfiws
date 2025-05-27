@@ -384,15 +384,35 @@ ul li button:hover {
 
 @media (max-width: 768px) {
   ul li {
-    flex-direction: column;
-    align-items: flex-start;
+    display: flex;
+    flex-direction: row; /* Keep items in a row */
+    flex-wrap: wrap; /* Allow wrapping if needed */
+    align-items: center; /* Keep items vertically aligned */
+    justify-content: space-between; /* Spread content */
+    width: 100%;
   }
 
   ul li div {
-    margin-top: 6px;
+    margin-top: 0; /* Remove top margin */
     display: flex;
     gap: 8px;
   }
+
+  /* Optional: If you want the text to take full width and buttons below */
+  /* Alternative layout: */
+  /*
+  ul li {
+    display: block;
+  }
+  ul li span:first-child {
+    display: block;
+    margin-bottom: 6px;
+  }
+  ul li div {
+    display: flex;
+    justify-content: flex-end;
+  }
+  */
 }
 
 
