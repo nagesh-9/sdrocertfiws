@@ -3,13 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>SWIFT RECORDS</title>
-  <!-- Character encoding -->
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<!-- Viewport for responsive design -->
 <meta name="viewport" content="width=device-width, initial-scale=0.75">
 
-<!-- Mobile Web App Capability (for PWA or fullscreen behavior) -->
 <meta name="mobile-web-app-capable" content="yes">
 
 
@@ -90,7 +87,7 @@
     font-weight: 600;
     color: #003d99;
     box-shadow: inset 0 0 5px rgba(0, 61, 153, 0.2);
-    transition: 
+    transition:
       background 0.3s ease,
       color 0.3s ease,
       box-shadow 0.3s ease;
@@ -138,6 +135,14 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     outline-offset: 2px;
   }
+  label {
+    font-weight: 600;
+    color: #003d99;
+    font-size: 14px;
+    margin-top: 10px;
+    display: block;
+  }
+
 
   input:focus, select:focus, textarea:focus {
     border-color: #0052cc;
@@ -204,6 +209,18 @@
   .delete-btn:hover {
     color: #a6211f;
   }
+  #voucherInventorySection {
+    border: 1px solid #cce0ff;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 8px;
+    background-color: #f7f9ff;
+  }
+  #voucherInventorySection h4 {
+    margin-top: 0;
+    color: #003d99;
+  }
+
 
   /* Responsive */
   @media (max-width: 768px) {
@@ -259,6 +276,17 @@ body.dark .screen {
   color: #e0e0e0;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
+body.dark label {
+    color: #bb86fc;
+}
+body.dark #voucherInventorySection {
+    border-color: #333;
+    background-color: #2a2a2a;
+}
+body.dark #voucherInventorySection h4 {
+    color: #bb86fc;
+}
+
 
 /* Forms */
 body.dark input,
@@ -294,6 +322,11 @@ body.dark nav.menu button {
 body.dark nav.menu button:hover {
   background: linear-gradient(135deg, #444, #555);
 }
+body.dark nav.menu button.active {
+    background: linear-gradient(135deg, #3700b3, #6200ee);
+    color: #fff;
+}
+
 
 /* Tables */
 body.dark table {
@@ -322,17 +355,13 @@ body.dark .delete-btn:hover {
 }
 
 /* Dark mode toggle button */
-body.dark #darkModeToggle {
+body.dark #darkModeToggle { /* Corrected ID */
   background: linear-gradient(135deg, #6200ee, #3700b3);
 }
-body.dark #darkModeToggle:hover {
+body.dark #darkModeToggle:hover { /* Corrected ID */
   background: linear-gradient(135deg, #7c4dff, #651fff);
 }
 
-/* Notification */
-body.dark .notification {
-  background: #3700b3;
-}
 
 ul {
   list-style-type: none;
@@ -352,14 +381,31 @@ ul li {
   font-weight: 500;
   color: #2a2f45;
   transition: background 0.3s ease;
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
 }
+body.dark ul li {
+    background: #2d2d2d;
+    color: #e0e0e0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+body.dark ul li:hover {
+    background: #383838;
+}
+
 
 ul li:hover {
   background: #e6f0ff;
 }
 
+/* Ensure action buttons are always on one line */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between delete and select buttons */
+}
+
 ul li span.delete-btn {
-  margin-left: 10px;
+  /* Removed margin-left as gap on parent handles spacing */
   font-size: 14px;
   font-weight: bold;
   color: #d93025;
@@ -367,7 +413,7 @@ ul li span.delete-btn {
 }
 
 ul li button {
-  margin-left: 10px;
+  /* Removed margin-left and vertical margins */
   font-size: 14px;
   padding: 6px 12px;
   background: #004d99;
@@ -376,45 +422,39 @@ ul li button {
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s ease;
+  /* margin-top: 5px; /* Add some margin for wrapped buttons */
+  /* margin-bottom: 5px; */
 }
 
 ul li button:hover {
   background: #002b66;
 }
+body.dark ul li button {
+    background: #3700b3;
+}
+body.dark ul li button:hover {
+    background: #6200ee;
+}
+
 
 @media (max-width: 768px) {
   ul li {
-    display: flex;
-    flex-direction: row; /* Keep items in a row */
-    flex-wrap: wrap; /* Allow wrapping if needed */
-    align-items: center; /* Keep items vertically aligned */
-    justify-content: space-between; /* Spread content */
-    width: 100%;
+    /* flex-direction: column; /* Stack items vertically */
+    /* align-items: flex-start; /* Align to the start */
   }
 
-  ul li div {
-    margin-top: 0; /* Remove top margin */
+  ul li div { /* This was for a specific layout, might need adjustment */
+    margin-top: 0;
     display: flex;
     gap: 8px;
+    width: 100%; /* Make button container full width */
+    justify-content: flex-end; /* Align buttons to the end */
+    margin-top: 8px;
   }
-
-  /* Optional: If you want the text to take full width and buttons below */
-  /* Alternative layout: */
-  /*
-  ul li {
-    display: block;
+  ul li span:first-child { /* Text content */
+    width: 100%;
   }
-  ul li span:first-child {
-    display: block;
-    margin-bottom: 6px;
-  }
-  ul li div {
-    display: flex;
-    justify-content: flex-end;
-  }
-  */
 }
-
 
 
 </style>
@@ -433,18 +473,17 @@ ul li button:hover {
 </header>
 
 <nav id="sideMenu" class="menu">
-  <button onclick="showScreen('companyScreen')">Company</button>
-  <button onclick="showScreen('yearScreen')">Year</button>
-  <button onclick="showScreen('groupScreen')">Groups</button>
-  <button onclick="showScreen('ledgerScreen')">Ledgers</button>
-  <button onclick="showScreen('voucherScreen')">Vouchers</button>
-  <button onclick="showScreen('inventoryScreen')">Inventory</button>
-  <button onclick="showScreen('daybookScreen'); renderDaybook();">Daybook</button>
-  <button onclick="showScreen('reportsScreen'); showReports();">Reports</button>
-  <button onclick="showScreen('settingsScreen')">Settings</button>
+  <button id="navCompany" onclick="showScreen('companyScreen')">Company</button>
+  <button id="navYear" onclick="showScreen('yearScreen')">Year</button>
+  <button id="navGroup" onclick="showScreen('groupScreen')">Groups</button>
+  <button id="navLedger" onclick="showScreen('ledgerScreen')">Ledgers</button>
+  <button id="navVoucher" onclick="showScreen('voucherScreen')">Vouchers</button>
+  <button id="navStockMaster" onclick="showScreen('stockMasterScreen')">Stock Master</button>
+  <button id="navInventory" onclick="showScreen('inventoryScreen')">Stock Adjustments</button> <button id="navDaybook" onclick="showScreen('daybookScreen'); renderDaybook();">Daybook</button>
+  <button id="navReports" onclick="showScreen('reportsScreen'); showReports();">Reports</button>
+  <button id="navSettings" onclick="showScreen('settingsScreen')">Settings</button>
 </nav>
 
-<!-- Company -->
 <section id="companyScreen" class="screen">
   <h3>Company</h3>
   <input id="companyName" placeholder="Company Name">
@@ -452,7 +491,6 @@ ul li button:hover {
   <ul id="companyList"></ul>
 </section>
 
-<!-- Year -->
 <section id="yearScreen" class="screen">
   <h3>Financial Year</h3>
   <input id="yearInput" placeholder="e.g., 2024-25">
@@ -460,7 +498,6 @@ ul li button:hover {
   <ul id="yearList"></ul>
 </section>
 
-<!-- Groups -->
 <section id="groupScreen" class="screen">
   <h3>Groups</h3>
   <input id="groupName" placeholder="Group Name">
@@ -468,7 +505,6 @@ ul li button:hover {
   <ul id="groupList"></ul>
 </section>
 
-<!-- Ledgers -->
 <section id="ledgerScreen" class="screen">
   <h3>Ledgers</h3>
   <input id="ledgerName" placeholder="Ledger Name">
@@ -477,50 +513,100 @@ ul li button:hover {
   <ul id="ledgerList"></ul>
 </section>
 
-<!-- Vouchers -->
 <section id="voucherScreen" class="screen">
   <h3>Vouchers</h3>
+  <label for="debit">Debit Ledger:</label>
   <select id="debit"></select>
+  <label for="credit">Credit Ledger:</label>
   <select id="credit"></select>
+  <label for="amount">Amount (₹):</label>
   <input id="amount" placeholder="Amount" type="number">
+  <label for="voucherDate">Date:</label>
   <input id="voucherDate" type="date">
+  <label for="voucherType">Voucher Type:</label>
   <select id="voucherType">
-  <option>Purchase</option>
-  <option>Sales</option>
-  <option>Payment</option>
-  <option>Receipt</option>
-  <option>Journal</option>
-  <option>Contra</option>
+    <option>Purchase</option>
+    <option>Sales</option>
+    <option>Payment</option>
+    <option>Receipt</option>
+    <option>Journal</option>
+    <option>Contra</option>
   </select>
-  <textarea id="narration" placeholder="Narration"></textarea>
-  <button onclick="addVoucher()">Add</button>
+  <label for="narration">Narration:</label>
+  <textarea id="narration" placeholder="Narration (max 200 chars)"></textarea>
+
+  <div id="voucherInventorySection" style="display:none;">
+    <h4>Inventory Details</h4>
+    <label for="voucherStockItem">Stock Item:</label>
+    <select id="voucherStockItem"></select>
+    <label for="voucherStockQuantity">Quantity:</label>
+    <input type="number" id="voucherStockQuantity" placeholder="Quantity of item">
+    </div>
+
+  <button onclick="addVoucher()">Add Voucher</button>
+  <h4>Voucher List</h4>
   <ul id="voucherList"></ul>
 </section>
 
-<!-- Inventory -->
-<section id="inventoryScreen" class="screen">
-  <h3>Inventory</h3>
-  <input id="itemName" placeholder="Item Name">
-  <input id="itemQty" type="number" placeholder="Qty">
-  <input id="itemRate" type="number" placeholder="Rate">
-  <input id="itemUnit" placeholder="Unit">
-  <button onclick="addItem()">Add</button>
-  <ul id="inventoryList"></ul>
+<section id="stockMasterScreen" class="screen">
+  <h3>Stock Master</h3>
+
+  <h4>Stock Groups</h4>
+  <input id="stockGroupName" placeholder="Enter stock group">
+  <button onclick="addStockGroup()">Add Group</button>
+  <ul id="stockGroupList"></ul>
+
+  <h4>Stock Categories</h4>
+  <input id="stockCategoryName" placeholder="Enter stock category">
+  <button onclick="addStockCategory()">Add Category</button>
+  <ul id="stockCategoryList"></ul>
+
+  <h4>Stock Keeping Units (SKUs)</h4>
+  <input id="skuName" placeholder="Enter SKU name (e.g., Main Store)">
+  <button onclick="addSKU()">Add SKU</button>
+  <ul id="skuList"></ul>
+
+  <h4>Stock Items</h4>
+  <input id="stockItemName" placeholder="Item Name">
+  <label for="stockGroupSelect">Group:</label>
+  <select id="stockGroupSelect"></select>
+  <label for="stockCategorySelect">Category:</label>
+  <select id="stockCategorySelect"></select>
+  <label for="stockSKUSelect">SKU/Location:</label>
+  <select id="stockSKUSelect"></select>
+  <input id="stockUnit" placeholder="Unit (e.g., pcs, kg, ltr)">
+  <input id="stockOpeningQty" type="number" placeholder="Opening Quantity">
+  <input id="stockOpeningRate" type="number" placeholder="Opening Rate (per unit)">
+  <button onclick="addStockItem()">Add Item</button>
+  <ul id="stockItemList"></ul>
 </section>
 
 
-<!-- Daybook -->
+<section id="inventoryScreen" class="screen">
+  <h3>Stock Adjustments</h3>
+  <label for="adjustmentItemName">Stock Item:</label>
+  <select id="adjustmentItemName"></select>
+  <label for="adjustmentQuantity">Adjustment Quantity (+ for increase, - for decrease):</label>
+  <input id="adjustmentQuantity" type="number" placeholder="e.g., 10 or -5">
+  <label for="adjustmentReason">Reason for Adjustment:</label>
+  <textarea id="adjustmentReason" placeholder="e.g., Opening stock correction, Damaged goods"></textarea>
+  <button onclick="performStockAdjustment()">Adjust Stock</button>
+  
+  <h4>Adjustment Log</h4>
+  <ul id="stockAdjustmentLogList"></ul>
+</section>
+
+
 <section id="daybookScreen" class="screen">
   <h3>Daybook</h3>
   <table>
     <thead>
-      <tr><th>Date</th><th>Debit</th><th>Credit</th><th>Amount</th></tr>
+      <tr><th>Date</th><th>Type</th><th>Debit</th><th>Credit</th><th>Amount (₹)</th><th>Narration</th></tr>
     </thead>
     <tbody id="daybookTable"></tbody>
   </table>
 </section>
 
-<!-- Reports -->
 <section id="reportsScreen" class="screen">
   <h3>Reports</h3>
   <div id="trialBalance"></div>
@@ -529,9 +615,9 @@ ul li button:hover {
   <div id="inventoryReport"></div>
 </section>
 
-<!--Settings-->
 <section id="settingsScreen" class="screen">
-<button id="darkModeTogle" onclick="document.body.classList.toggle('dark')">🌙 Toggle Dark Mode</button>
+    <h3>Settings</h3>
+    <button id="darkModeToggle" onclick="document.body.classList.toggle('dark')">🌙 Toggle Dark Mode</button>
 </section>
 
 <script>
@@ -549,7 +635,30 @@ function save() {
 function load() {
   const d = localStorage.getItem('swiftData');
   if (d) data = JSON.parse(d);
+  // Ensure essential structures exist after loading, especially for older data
+   for (const compName in data.companies) {
+        const company = data.companies[compName];
+        for (const yearName in company.years) {
+            const yearData = company.years[yearName];
+            if (!yearData.stockItems) yearData.stockItems = [];
+            if (!yearData.stockAdjustments) yearData.stockAdjustments = [];
+            yearData.stockItems.forEach(item => {
+                if (item.currentQty === undefined) {
+                    item.currentQty = item.openingQty; // Initialize if missing
+                }
+            });
+        }
+    }
 }
+
+function setActiveNav(screenId) {
+    document.querySelectorAll('nav.menu button').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById('nav' + screenId.replace('Screen', ''));
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+    }
+}
+
 function showScreen(id) {
    if (window.innerWidth <= 768) {
     document.getElementById('sideMenu').classList.remove('open');
@@ -557,13 +666,43 @@ function showScreen(id) {
 
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
+  setActiveNav(id);
+
   if (id === 'companyScreen') renderCompanies();
   if (id === 'yearScreen') renderYears();
   if (id === 'groupScreen') renderGroups();
   if (id === 'ledgerScreen') renderLedgers();
-  if (id === 'voucherScreen') renderVouchers();
-  if (id === 'inventoryScreen') renderItems();
+  if (id === 'voucherScreen') {
+      renderVouchers(); // Render existing vouchers
+      populateLedgerDropdownsForVoucher(); // Populate debit/credit ledgers
+      handleVoucherTypeChange(); // Initial setup for inventory section
+      document.getElementById('voucherDate').valueAsDate = new Date(); // Set default date
+  }
+  if (id === 'inventoryScreen') {
+      populateAdjustmentItemDropdown();
+      renderStockAdjustmentLog();
+  }
+  if (id === 'stockMasterScreen') {
+    renderStockGroups();
+    renderStockCategories();
+    renderSKUs();
+    renderStockItems();
+  }
 }
+
+document.getElementById('voucherType').addEventListener('change', handleVoucherTypeChange);
+
+function handleVoucherTypeChange() {
+    const type = document.getElementById('voucherType').value;
+    const invSection = document.getElementById('voucherInventorySection');
+    if (type === 'Sales' || type === 'Purchase') {
+        invSection.style.display = 'block';
+        populateVoucherStockItemDropdown();
+    } else {
+        invSection.style.display = 'none';
+    }
+}
+
 
 function createCompany() {
   const name = document.getElementById('companyName').value.trim();
@@ -572,31 +711,55 @@ function createCompany() {
   currentCompany = name;
   save(); renderCompanies(); updateHeader();
   notifySuccess("Company created successfully!");
-
+  document.getElementById('companyName').value = '';
 }
 function selectCompany(name) {
-  currentCompany = name; renderCompanies(); updateHeader();
+  currentCompany = name;
+  currentYear = ''; // Reset year when company changes
+  renderCompanies(); updateHeader();
+  // Potentially auto-select first year or show year screen
+  if (Object.keys(data.companies[currentCompany].years).length > 0) {
+    showScreen('yearScreen');
+  } else {
+    notifySuccess(`Company "${name}" selected. Please add or select a financial year.`);
+  }
 }
 function deleteCompany(name) {
+  if (!confirm(`Are you sure you want to delete company "${name}" and all its data?`)) return;
   delete data.companies[name];
-  if (currentCompany === name) currentCompany = '';
+  if (currentCompany === name) {
+      currentCompany = '';
+      currentYear = '';
+  }
   save(); renderCompanies(); updateHeader();
+  notifySuccess(`Company "${name}" deleted.`);
 }
 function renderCompanies() {
   const ul = document.getElementById('companyList');
   ul.innerHTML = '';
   for (let name in data.companies) {
     const li = document.createElement('li');
-    li.textContent = name + (name === currentCompany ? ' (selected)' : '');
+    const textSpan = document.createElement('span');
+    textSpan.textContent = name + (name === currentCompany ? ' (Selected)' : '');
+    li.appendChild(textSpan);
+    
+    const btnDiv = document.createElement('div');
+    btnDiv.classList.add('action-buttons'); // Add class for styling
+    
+    // Delete button
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
-    delBtn.onclick = () => deleteCompany(name);
+    delBtn.onclick = (e) => { e.stopPropagation(); deleteCompany(name); };
+    btnDiv.appendChild(delBtn); // Append delete button first
+
+    // Select button
     const selBtn = document.createElement('button');
     selBtn.textContent = 'Select';
-    selBtn.onclick = () => selectCompany(name);
-    li.appendChild(delBtn);
-    li.appendChild(selBtn);
+    selBtn.onclick = (e) => { e.stopPropagation(); selectCompany(name); };
+    btnDiv.appendChild(selBtn); // Append select button second
+    
+    li.appendChild(btnDiv);
     ul.appendChild(li);
   }
 }
@@ -606,94 +769,140 @@ function updateHeader() {
 }
 
 const defaultGroups = [
-  'Capital', 'Loans', 'Sales', 'Purchases',
-  'Expenses', 'Revenue', 'Assets', 'Liabilities',
-  'Fixed Assets', 'Current Assets',
-  'Direct Expenses', 'Indirect Expenses',
-  'Sundry Debtors', 'Sundry Creditors'
+  'Capital Account', 'Loans (Liability)', 'Current Liabilities', 'Fixed Assets', 
+  'Investments', 'Current Assets', 'Branch / Divisions', 'Sales Accounts', 
+  'Purchase Accounts', 'Direct Incomes', 'Direct Expenses', 'Indirect Incomes', 
+  'Indirect Expenses', 'Suspense Account', 'Stock-in-Hand', 
+  'Sundry Debtors', 'Sundry Creditors', 'Bank Accounts', 'Cash-in-Hand',
+  'Duties & Taxes', 'Provisions', 'Reserves & Surplus', 'Secured Loans', 'Unsecured Loans',
+  'Bank OD A/c'
 ];
 
 function addYear() {
   if (!currentCompany) return notifyError("Select a company first.");
   const y = document.getElementById('yearInput').value.trim();
-  if (!y) return notifyError("Financial year is required.");
+  if (!y.match(/^\d{4}-\d{2}$/)) return notifyError("Year format must beYYYY-YY (e.g., 2024-25).");
   const company = data.companies[currentCompany];
-  if (!company.years[y]) company.years[y] = { groups: [], ledgers: [], vouchers: [], inventory: [] };
-  if (company.years[y].groups.length === 0) {
-  company.years[y].groups.push(...defaultGroups);
-}
-
+  if (!company.years[y]) {
+      company.years[y] = { 
+          groups: [...defaultGroups], // Add default groups only on new year creation
+          ledgers: [], 
+          vouchers: [], 
+          stockGroups: [], stockCategories: [], godowns: [], stockItems: [], stockAdjustments: [] // Initialize all stock related arrays
+      };
+  }
   currentYear = y;
   save(); renderYears(); updateHeader();
-  notifySuccess("Financial year added successfully!");
-
+  notifySuccess(`Financial year "${y}" added/selected successfully!`);
+  document.getElementById('yearInput').value = '';
 }
 function selectYear(y) {
   currentYear = y;
   updateHeader(); renderYears();
+  notifySuccess(`Year "${y}" selected.`);
+  // After selecting a year, good to refresh dependent screens
+  showScreen('groupScreen'); // Or dashboard/voucher screen
 }
 function deleteYear(y) {
+  if (!confirm(`Are you sure you want to delete financial year "${y}" and all its data?`)) return;
   delete data.companies[currentCompany].years[y];
   if (currentYear === y) currentYear = '';
   save(); renderYears(); updateHeader();
+  notifySuccess(`Financial year "${y}" deleted.`);
 }
 function renderYears() {
   const ul = document.getElementById('yearList');
   ul.innerHTML = '';
-  if (!currentCompany) return;
+  if (!currentCompany || !data.companies[currentCompany]) return;
   const yData = data.companies[currentCompany].years;
   for (let y in yData) {
     const li = document.createElement('li');
-    li.textContent = y + (y === currentYear ? ' (selected)' : '');
+    const textSpan = document.createElement('span');
+    textSpan.textContent = y + (y === currentYear ? ' (Selected)' : '');
+    li.appendChild(textSpan);
+
+    const btnDiv = document.createElement('div');
+    btnDiv.classList.add('action-buttons'); // Add class for styling
+    
+    // Delete button
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
-    delBtn.onclick = () => deleteYear(y);
+    delBtn.onclick = (e) => { e.stopPropagation(); deleteYear(y); };
+    btnDiv.appendChild(delBtn); // Append delete button first
+
+    // Select button
     const selBtn = document.createElement('button');
     selBtn.textContent = 'Select';
-    selBtn.onclick = () => selectYear(y);
-    li.appendChild(delBtn);
-    li.appendChild(selBtn);
+    selBtn.onclick = (e) => { e.stopPropagation(); selectYear(y); };
+    btnDiv.appendChild(selBtn); // Append select button second
+
+    li.appendChild(btnDiv);
     ul.appendChild(li);
   }
 }
 
 function getYearData() {
-  if (!currentCompany || !currentYear) return null;
-  return data.companies[currentCompany].years[currentYear];
+  if (!currentCompany || !currentYear || !data.companies[currentCompany] || !data.companies[currentCompany].years[currentYear]) {
+    // notifyError("Please select a company and a financial year first."); // This can be too noisy
+    return null;
+  }
+  const yearData = data.companies[currentCompany].years[currentYear];
+  // Ensure all necessary arrays exist for the current year
+  if (!yearData.groups) yearData.groups = [...defaultGroups];
+  if (!yearData.ledgers) yearData.ledgers = [];
+  if (!yearData.vouchers) yearData.vouchers = [];
+  if (!yearData.stockGroups) yearData.stockGroups = [];
+  if (!yearData.stockCategories) yearData.stockCategories = [];
+  if (!yearData.godowns) yearData.godowns = []; // SKUs
+  if (!yearData.stockItems) yearData.stockItems = [];
+  if (!yearData.stockAdjustments) yearData.stockAdjustments = [];
+  
+  yearData.stockItems.forEach(item => { // Ensure currentQty exists
+      if (item.currentQty === undefined) item.currentQty = item.openingQty;
+  });
+
+  return yearData;
 }
+
 
 function addGroup() {
   const name = document.getElementById('groupName').value.trim();
-  const d = getYearData(); if (!d) return notifyError("Select a company and year first.");
-if (!name) return notifyError("Group name is required.");
-
+  const d = getYearData(); if (!d) return notifyError("Select company & year.");
+  if (!name) return notifyError("Group name is required.");
+  if (d.groups.includes(name)) return notifyError(`Group "${name}" already exists.`);
   d.groups.push(name); save(); renderGroups();
-  notifySuccess("Group added successfully!");
-
+  notifySuccess(`Group "${name}" added successfully!`);
+  document.getElementById('groupName').value = '';
 }
 function renderGroups() {
   const ul = document.getElementById('groupList');
-  const d = getYearData(); if (!d) return;
-  ul.innerHTML = '';
+  const d = getYearData(); 
+  ul.innerHTML = ''; // Clear previous list
+  if (!d) return;
+
   d.groups.forEach((g, i) => {
     const li = document.createElement('li');
     li.textContent = g;
-    const delBtn = document.createElement('span');
-    delBtn.textContent = '❌';
-    delBtn.className = 'delete-btn';
-    delBtn.onclick = () => {
-      d.groups.splice(i, 1);
-      save(); renderGroups(); renderLedgers(); renderVouchers(); showReports();
-    };
-    li.appendChild(delBtn);
+    // Default groups should not be deletable easily, or add a flag
+    if (!defaultGroups.includes(g)) {
+        const delBtn = document.createElement('span');
+        delBtn.textContent = '❌';
+        delBtn.className = 'delete-btn';
+        delBtn.onclick = () => {
+          if (!confirm(`Are you sure you want to delete group "${g}"? This might affect ledgers.`)) return;
+          d.groups.splice(i, 1);
+          save(); renderGroups(); renderLedgers();
+          notifySuccess(`Group "${g}" deleted.`);
+        };
+        li.appendChild(delBtn);
+    }
     ul.appendChild(li);
   });
 
-  // Also update dropdowns
   const ledgerGroupSelect = document.getElementById('ledgerGroup');
-  ledgerGroupSelect.innerHTML = '';
-  d.groups.forEach(g => {
+  ledgerGroupSelect.innerHTML = '<option value="">Select Group...</option>';
+  d.groups.sort().forEach(g => { // Sort groups alphabetically for dropdown
     const opt = document.createElement('option');
     opt.value = g;
     opt.textContent = g;
@@ -704,208 +913,536 @@ function renderGroups() {
 function addLedger() {
   const name = document.getElementById('ledgerName').value.trim();
   const group = document.getElementById('ledgerGroup').value;
-  const d = getYearData(); if (!d) return notifyError("Select a company and year first.");
+  const d = getYearData(); if (!d) return notifyError("Select company & year.");
   if (!name) return notifyError("Ledger name is required.");
   if (!group) return notifyError("Please select a group for the ledger.");
+  if (d.ledgers.find(l => l.name.toLowerCase() === name.toLowerCase())) return notifyError(`Ledger "${name}" already exists.`);
+  
   d.ledgers.push({ name, group });
-  save(); renderLedgers(); renderVouchers(); showReports();
-  notifySuccess("Ledger added successfully!");
-
+  save(); renderLedgers();
+  notifySuccess(`Ledger "${name}" added successfully!`);
+  document.getElementById('ledgerName').value = '';
+  document.getElementById('ledgerGroup').value = '';
 }
 function renderLedgers() {
   const ul = document.getElementById('ledgerList');
-  const d = getYearData(); if (!d) return;
-  ul.innerHTML = '';
-  d.ledgers.forEach((l, i) => {
+  const d = getYearData(); 
+  ul.innerHTML = ''; if (!d) return;
+
+  d.ledgers.sort((a,b) => a.name.localeCompare(b.name)).forEach((l, i) => { // Sort ledgers
     const li = document.createElement('li');
     li.textContent = `${l.name} (${l.group})`;
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
-      d.ledgers.splice(i, 1);
-      save(); renderLedgers(); renderVouchers(); showReports();
+      if (!confirm(`Are you sure you want to delete ledger "${l.name}"? This might affect vouchers.`)) return;
+      // Find the original index before sorting if needed for splice, or filter it out
+      const originalIndex = d.ledgers.findIndex(ledger => ledger.name === l.name && ledger.group === l.group);
+      if (originalIndex > -1) d.ledgers.splice(originalIndex, 1);
+      save(); renderLedgers(); populateLedgerDropdownsForVoucher(); showReports();
+      notifySuccess(`Ledger "${l.name}" deleted.`);
     };
     li.appendChild(delBtn);
     ul.appendChild(li);
   });
-
-  // Update dropdowns
-  const debit = document.getElementById('debit');
-  const credit = document.getElementById('credit');
-  [debit, credit].forEach(select => select.innerHTML = '');
-  d.ledgers.forEach(l => {
-    [debit, credit].forEach(select => {
-      const opt = document.createElement('option');
-      opt.value = l.name;
-      opt.textContent = l.name;
-      select.appendChild(opt);
-    });
-  });
+  populateLedgerDropdownsForVoucher();
 }
 
+function populateLedgerDropdownsForVoucher() {
+    const d = getYearData();
+    const debitSelect = document.getElementById('debit');
+    const creditSelect = document.getElementById('credit');
+    
+    debitSelect.innerHTML = '<option value="">Select Debit Ledger...</option>';
+    creditSelect.innerHTML = '<option value="">Select Credit Ledger...</option>';
+
+    if (!d || !d.ledgers) return;
+
+    d.ledgers.sort((a,b) => a.name.localeCompare(b.name)).forEach(l => {
+        const optDr = document.createElement('option');
+        optDr.value = l.name;
+        optDr.textContent = l.name;
+        debitSelect.appendChild(optDr);
+
+        const optCr = document.createElement('option');
+        optCr.value = l.name;
+        optCr.textContent = l.name;
+        creditSelect.appendChild(optCr);
+    });
+}
+
+
 function addVoucher() {
-  const debit = document.getElementById('debit').value;
-  const credit = document.getElementById('credit').value;
+  const d = getYearData();
+  if (!d) return notifyError("Select a company and financial year first.");
+
+  const debitLedger = document.getElementById('debit').value;
+  const creditLedger = document.getElementById('credit').value;
   const amount = parseFloat(document.getElementById('amount').value);
   const date = document.getElementById('voucherDate').value;
   const type = document.getElementById('voucherType').value;
   const narration = document.getElementById('narration').value.trim();
-  const d = getYearData();
 
-    if (!d) return notifyError("Select a company and financial year first.");
-  if (!debit || !credit || !amount || !date || !type) {
-    return notifyError("Please fill in all the fields.");
-  }
-  if (debit === credit) {
-    return notifyError("Debit and Credit cannot be the same ledger.");
-  }
-  if (isNaN(amount) || amount <= 0) {
-    return notifyError("Amount must be a positive number.");
-  }
-  if (narration.length > 200) {
-    return notifyError("Narration is too long (limit to 200 characters).");
+  if (!debitLedger || !creditLedger || !amount || !date || !type) return notifyError("Please fill in all required voucher fields.");
+  if (debitLedger === creditLedger) return notifyError("Debit and Credit ledgers cannot be the same.");
+  if (isNaN(amount) || amount <= 0) return notifyError("Amount must be a positive number.");
+  if (narration.length > 200) return notifyError("Narration is too long (max 200 characters).");
+
+  const newVoucher = { debit: debitLedger, credit: creditLedger, amount, date, type, narration, inventoryDetails: null };
+  let inventoryUpdatePerformed = false;
+
+  if (type === 'Sales' || type === 'Purchase') {
+    const stockItemName = document.getElementById('voucherStockItem').value;
+    const stockQuantity = parseFloat(document.getElementById('voucherStockQuantity').value);
+
+    if (!stockItemName) return notifyError("Please select a stock item for Sales/Purchase voucher.");
+    if (isNaN(stockQuantity) || stockQuantity <= 0) return notifyError("Stock quantity must be a positive number.");
+
+    const itemToUpdate = d.stockItems.find(item => item.name === stockItemName);
+    if (!itemToUpdate) return notifyError("Selected stock item not found in master.");
+    
+    // Ensure currentQty is initialized
+    if (itemToUpdate.currentQty === undefined) itemToUpdate.currentQty = itemToUpdate.openingQty;
+
+    if (type === 'Sales') {
+      if (itemToUpdate.currentQty < stockQuantity) {
+        return notifyError(`Not enough stock for ${stockItemName}. Available: ${itemToUpdate.currentQty} ${itemToUpdate.unit}.`);
+      }
+      itemToUpdate.currentQty -= stockQuantity;
+    } else { // Purchase
+      itemToUpdate.currentQty += stockQuantity;
+    }
+    newVoucher.inventoryDetails = { itemName: stockItemName, quantity: stockQuantity, value: amount };
+    inventoryUpdatePerformed = true;
   }
 
-  // Add Voucher
-  d.vouchers.push({ debit, credit, amount, date, type, narration });
-  save(); renderVouchers(); showReports(); renderDaybook();
+  d.vouchers.push(newVoucher);
+  save();
+  renderVouchers();
+  showReports();
+  renderDaybook();
+  if (inventoryUpdatePerformed) {
+    renderStockItems(); // Refresh stock master view
+    populateVoucherStockItemDropdown(); // Refresh dropdown in voucher screen
+    populateAdjustmentItemDropdown(); // Refresh stock adjustment dropdown
+  }
   notifySuccess("Voucher added successfully!");
-
-  // Optional: Clear form after successful entry
+  // Clear relevant voucher form fields
   document.getElementById('amount').value = '';
-  document.getElementById('voucherDate').value = '';
+  // document.getElementById('voucherDate').valueAsDate = new Date(); // Keep date or clear as preferred
   document.getElementById('narration').value = '';
+  if (type === 'Sales' || type === 'Purchase') {
+    document.getElementById('voucherStockItem').value = '';
+    document.getElementById('voucherStockQuantity').value = '';
+  }
 }
 
 function renderVouchers() {
   const ul = document.getElementById('voucherList');
-  const d = getYearData(); if (!d) return;
-  ul.innerHTML = '';
-  d.vouchers.forEach((v, i) => {
+  const d = getYearData(); 
+  ul.innerHTML = ''; if (!d) return;
+
+  d.vouchers.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach((v, index) => { // Show newest first
     const li = document.createElement('li');
-    li.textContent = `${v.date}: ${v.debit} Dr <- ${v.credit} Cr = ₹${v.amount}`;
+    let voucherText = `${v.date} [${v.type}] ${v.debit} Dr / ${v.credit} Cr = ₹${v.amount.toFixed(2)}`;
+    if (v.inventoryDetails) {
+      voucherText += ` (Item: ${v.inventoryDetails.itemName}, Qty: ${v.inventoryDetails.quantity})`;
+    }
+    if(v.narration) voucherText += ` <small><i>${v.narration}</i></small>`;
+    
+    const textSpan = document.createElement('span');
+    textSpan.innerHTML = voucherText; // Use innerHTML to render small tag
+    li.appendChild(textSpan);
+
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
-      d.vouchers.splice(i, 1);
-      save(); renderVouchers(); showReports(); renderDaybook();
+      if (!confirm(`Are you sure you want to delete this voucher?`)) return;
+      
+      const originalIndex = d.vouchers.findIndex(vo => vo.date === v.date && vo.debit === v.debit && vo.credit === v.credit && vo.amount === v.amount && vo.narration === v.narration); // More robust find
+      if (originalIndex === -1) return notifyError("Voucher not found for deletion.");
+
+      const voucherToDelete = d.vouchers[originalIndex];
+
+      // Reverse inventory update if applicable
+      if (voucherToDelete.inventoryDetails && (voucherToDelete.type === 'Sales' || voucherToDelete.type === 'Purchase')) {
+        const itemToUpdate = d.stockItems.find(item => item.name === voucherToDelete.inventoryDetails.itemName);
+        if (itemToUpdate) {
+          if (itemToUpdate.currentQty === undefined) itemToUpdate.currentQty = itemToUpdate.openingQty;
+          if (voucherToDelete.type === 'Sales') {
+            itemToUpdate.currentQty += voucherToDelete.inventoryDetails.quantity;
+          } else { // Purchase
+            itemToUpdate.currentQty -= voucherToDelete.inventoryDetails.quantity;
+          }
+        }
+      }
+      d.vouchers.splice(originalIndex, 1);
+      save(); 
+      renderVouchers(); 
+      showReports(); 
+      renderDaybook();
+      renderStockItems();
+      populateVoucherStockItemDropdown();
+      populateAdjustmentItemDropdown();
+      notifySuccess("Voucher deleted.");
     };
     li.appendChild(delBtn);
     ul.appendChild(li);
   });
 }
 
-function addItem() {
-  const name = document.getElementById('itemName').value.trim();
-  const qty = parseFloat(document.getElementById('itemQty').value);
-  const rate = parseFloat(document.getElementById('itemRate').value);
-  const unit = document.getElementById('itemUnit').value.trim();
-  const d = getYearData(); if (!d) return notifyError("Select a company and year first.");
-  if (!name) return notifyError("Item name is required.");
-  if (!unit) return notifyError("Item unit is required.");
-  if (isNaN(qty) || qty <= 0) return notifyError("Quantity must be a positive number.");
-  if (isNaN(rate) || rate <= 0) return notifyError("Rate must be a positive number.");
-
-  d.inventory.push({ name, qty, rate, unit });
-  save(); renderItems(); showReports();
-  notifySuccess("Inventory item added successfully!");
+// --- Stock Master Functions ---
+function addStockGroup() {
+  const name = document.getElementById('stockGroupName').value.trim();
+  const d = getYearData(); if (!d) return notifyError("Select company & year.");
+  if (!name) return notifyError("Enter a stock group name.");
+  if (d.stockGroups.includes(name)) return notifyError("Stock group already exists.");
+  d.stockGroups.push(name); save(); renderStockGroups();
+  document.getElementById('stockGroupName').value = '';
+  notifySuccess("Stock group added.");
 }
-function renderItems() {
-  const ul = document.getElementById('inventoryList');
-  const d = getYearData(); if (!d) return;
-  ul.innerHTML = '';
-  d.inventory.forEach((item, i) => {
+function renderStockGroups() {
+  const ul = document.getElementById('stockGroupList');
+  const sel = document.getElementById('stockGroupSelect');
+  const d = getYearData(); 
+  ul.innerHTML = ''; sel.innerHTML = '<option value="">Select Stock Group...</option>';
+  if (!d) return;
+  
+  d.stockGroups.sort().forEach((g, i) => {
     const li = document.createElement('li');
-    li.textContent = `${item.name}: ${item.qty} ${item.unit} @ ₹${item.rate}`;
+    li.textContent = g;
+    const delBtn = document.createElement('span');
+    delBtn.textContent = '❌'; delBtn.className = 'delete-btn';
+    delBtn.onclick = () => { d.stockGroups.splice(i, 1); save(); renderStockGroups(); notifySuccess("Stock group deleted.");};
+    li.appendChild(delBtn); ul.appendChild(li);
+    const opt = document.createElement('option'); opt.value = g; opt.textContent = g; sel.appendChild(opt);
+  });
+}
+
+function addStockCategory() {
+  const name = document.getElementById('stockCategoryName').value.trim();
+  const d = getYearData(); if (!d) return notifyError("Select company & year.");
+  if (!name) return notifyError("Enter a stock category name.");
+  if (d.stockCategories.includes(name)) return notifyError("Stock category already exists.");
+  d.stockCategories.push(name); save(); renderStockCategories();
+  document.getElementById('stockCategoryName').value = '';
+  notifySuccess("Stock category added.");
+}
+function renderStockCategories() {
+  const ul = document.getElementById('stockCategoryList');
+  const sel = document.getElementById('stockCategorySelect');
+  const d = getYearData(); 
+  ul.innerHTML = ''; sel.innerHTML = '<option value="">Select Stock Category...</option>';
+  if (!d) return;
+
+  d.stockCategories.sort().forEach((c, i) => {
+    const li = document.createElement('li');
+    li.textContent = c;
+    const delBtn = document.createElement('span');
+    delBtn.textContent = '❌'; delBtn.className = 'delete-btn';
+    delBtn.onclick = () => { d.stockCategories.splice(i, 1); save(); renderStockCategories(); notifySuccess("Stock category deleted.");};
+    li.appendChild(delBtn); ul.appendChild(li);
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c; sel.appendChild(opt);
+  });
+}
+
+function addSKU() { // SKU / Godown
+  const name = document.getElementById('skuName').value.trim();
+  const d = getYearData(); if (!d) return notifyError("Select company & year.");
+  if (!name) return notifyError("Enter SKU/Location name.");
+  if (d.godowns.includes(name)) return notifyError("SKU/Location already exists.");
+  d.godowns.push(name); save(); renderSKUs();
+  document.getElementById('skuName').value = '';
+  notifySuccess("SKU/Location added.");
+}
+function renderSKUs() {
+  const ul = document.getElementById('skuList');
+  const sel = document.getElementById('stockSKUSelect');
+  const d = getYearData(); 
+  ul.innerHTML = ''; sel.innerHTML = '<option value="">Select SKU/Location...</option>';
+  if (!d) return;
+
+  d.godowns.sort().forEach((s, i) => {
+    const li = document.createElement('li');
+    li.textContent = s;
+    const delBtn = document.createElement('span');
+    delBtn.textContent = '❌'; delBtn.className = 'delete-btn';
+    delBtn.onclick = () => { d.godowns.splice(i, 1); save(); renderSKUs(); notifySuccess("SKU/Location deleted.");};
+    li.appendChild(delBtn); ul.appendChild(li);
+    const opt = document.createElement('option'); opt.value = s; opt.textContent = s; sel.appendChild(opt);
+  });
+}
+
+function addStockItem() {
+  const d = getYearData(); if (!d) return notifyError("Select company & year.");
+  
+  const name = document.getElementById('stockItemName').value.trim();
+  const group = document.getElementById('stockGroupSelect').value;
+  const category = document.getElementById('stockCategorySelect').value;
+  const unit = document.getElementById('stockUnit').value.trim();
+  const godown = document.getElementById('stockSKUSelect').value; // SKU
+  const openingQty = parseFloat(document.getElementById('stockOpeningQty').value);
+  const openingRate = parseFloat(document.getElementById('stockOpeningRate').value);
+
+  if (!name || !group || !category || !unit || !godown) return notifyError("All stock item fields are required.");
+  if (isNaN(openingQty) || openingQty < 0) return notifyError("Opening quantity must be a non-negative number.");
+  if (isNaN(openingRate) || openingRate < 0) return notifyError("Opening rate must be a non-negative number.");
+  if (d.stockItems.find(item => item.name.toLowerCase() === name.toLowerCase())) return notifyError(`Stock item "${name}" already exists.`);
+
+  d.stockItems.push({ name, group, category, unit, godown, openingQty, openingRate, currentQty: openingQty });
+  save(); 
+  renderStockItems();
+  populateVoucherStockItemDropdown();
+  populateAdjustmentItemDropdown();
+  notifySuccess(`Stock item "${name}" added.`);
+  // Clear form
+  document.getElementById('stockItemName').value = '';
+  document.getElementById('stockUnit').value = '';
+  document.getElementById('stockOpeningQty').value = '';
+  document.getElementById('stockOpeningRate').value = '';
+}
+function renderStockItems() {
+  const ul = document.getElementById('stockItemList');
+  const d = getYearData(); 
+  ul.innerHTML = ''; if (!d) return;
+
+  d.stockItems.sort((a,b) => a.name.localeCompare(b.name)).forEach((item, i) => {
+    const li = document.createElement('li');
+    const currentQty = item.currentQty !== undefined ? item.currentQty : item.openingQty;
+    li.innerHTML = `<span>${item.name} (Op.Qty: ${item.openingQty}, Cur.Qty: ${currentQty} ${item.unit})<br>
+                    <small>Grp: ${item.group}, Cat: ${item.category}, SKU: ${item.godown}, Op.Rate: ₹${item.openingRate.toFixed(2)}</small></span>`;
+    
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
-      d.inventory.splice(i, 1);
-      save(); renderItems(); showReports();
+      if (!confirm(`Are you sure you want to delete stock item "${item.name}"?`)) return;
+      const originalIndex = d.stockItems.findIndex(si => si.name === item.name);
+      if (originalIndex > -1) d.stockItems.splice(originalIndex, 1);
+      save(); 
+      renderStockItems();
+      populateVoucherStockItemDropdown();
+      populateAdjustmentItemDropdown();
+      notifySuccess(`Stock item "${item.name}" deleted.`);
     };
     li.appendChild(delBtn);
     ul.appendChild(li);
   });
 }
 
+// --- Stock Adjustment Functions (formerly Inventory Screen) ---
+function populateAdjustmentItemDropdown() {
+    const d = getYearData();
+    const select = document.getElementById('adjustmentItemName');
+    select.innerHTML = '<option value="">Select Stock Item...</option>';
+    if (!d || !d.stockItems) return;
+
+    d.stockItems.sort((a,b) => a.name.localeCompare(b.name)).forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.name;
+        const currentQty = item.currentQty !== undefined ? item.currentQty : item.openingQty;
+        opt.textContent = `${item.name} (Current Qty: ${currentQty} ${item.unit})`;
+        select.appendChild(opt);
+    });
+}
+
+function performStockAdjustment() {
+    const d = getYearData();
+    if (!d) return notifyError("Select company and year first.");
+
+    const itemName = document.getElementById('adjustmentItemName').value;
+    const adjustmentQty = parseFloat(document.getElementById('adjustmentQuantity').value);
+    const reason = document.getElementById('adjustmentReason').value.trim();
+
+    if (!itemName) return notifyError("Select a stock item for adjustment.");
+    if (isNaN(adjustmentQty)) return notifyError("Adjustment quantity must be a valid number.");
+    if (adjustmentQty === 0) return notifyError("Adjustment quantity cannot be zero.");
+    if (!reason) return notifyError("Reason for adjustment is required.");
+
+    const itemToAdjust = d.stockItems.find(item => item.name === itemName);
+    if (!itemToAdjust) return notifyError("Stock item not found.");
+
+    if (itemToAdjust.currentQty === undefined) itemToAdjust.currentQty = itemToAdjust.openingQty;
+
+    if ((itemToAdjust.currentQty + adjustmentQty) < 0) {
+        return notifyError(`Adjustment results in negative stock for ${itemName}. Available: ${itemToAdjust.currentQty}`);
+    }
+
+    itemToAdjust.currentQty += adjustmentQty;
+
+    if (!d.stockAdjustments) d.stockAdjustments = [];
+    d.stockAdjustments.push({
+        date: new Date().toISOString().split('T')[0],
+        itemName,
+        adjustedBy: adjustmentQty,
+        reason,
+        newQty: itemToAdjust.currentQty
+    });
+
+    save();
+    renderStockItems(); 
+    populateVoucherStockItemDropdown(); 
+    populateAdjustmentItemDropdown(); 
+    renderStockAdjustmentLog();
+    notifySuccess("Stock adjusted successfully.");
+    // Clear adjustment form
+    document.getElementById('adjustmentItemName').value = '';
+    document.getElementById('adjustmentQuantity').value = '';
+    document.getElementById('adjustmentReason').value = '';
+}
+
+function renderStockAdjustmentLog() {
+    const ul = document.getElementById('stockAdjustmentLogList');
+    const d = getYearData();
+    ul.innerHTML = '';
+    if (!d || !d.stockAdjustments || d.stockAdjustments.length === 0) {
+        ul.innerHTML = '<li>No stock adjustments recorded yet.</li>';
+        return;
+    }
+    d.stockAdjustments.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(adj => {
+        const li = document.createElement('li');
+        li.textContent = `${adj.date}: ${adj.itemName} adjusted by ${adj.adjustedBy > 0 ? '+' : ''}${adj.adjustedBy} (New Qty: ${adj.newQty}). Reason: ${adj.reason}`;
+        ul.appendChild(li);
+    });
+}
+
+
+function populateVoucherStockItemDropdown() {
+    const d = getYearData();
+    const select = document.getElementById('voucherStockItem');
+    select.innerHTML = '<option value="">Select Stock Item...</option>';
+    if (!d || !d.stockItems) return;
+
+    d.stockItems.sort((a,b) => a.name.localeCompare(b.name)).forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.name;
+        const currentQty = item.currentQty !== undefined ? item.currentQty : item.openingQty;
+        opt.textContent = `${item.name} (Avail: ${currentQty} ${item.unit})`;
+        select.appendChild(opt);
+    });
+}
+
+
+// --- Reports & Daybook ---
 function showReports() {
-  const d = getYearData(); if (!d) return;
+  const d = getYearData(); if (!d) return notifyError("Select company & year to view reports.");
 
   // Trial Balance
   let tb = {};
-  d.ledgers.forEach(l => tb[l.name] = 0);
+  d.ledgers.forEach(l => tb[l.name] = { debit: 0, credit: 0 });
   d.vouchers.forEach(v => {
-    tb[v.debit] += v.amount;
-    tb[v.credit] -= v.amount;
+    if(tb[v.debit]) tb[v.debit].debit += v.amount; else if (v.debit) tb[v.debit] = {debit: v.amount, credit: 0}; // Handle if ledger was deleted
+    if(tb[v.credit]) tb[v.credit].credit += v.amount; else if (v.credit) tb[v.credit] = {debit: 0, credit: v.amount};
   });
 
-  let tbHtml = '<h4>Trial Balance</h4><table><tr><th>Ledger</th><th>Debit</th><th>Credit</th></tr>';
-  for (let l in tb) {
-    const val = tb[l];
-    tbHtml += `<tr><td>${l}</td><td>${val > 0 ? val : ''}</td><td>${val < 0 ? -val : ''}</td></tr>`;
+  let tbHtml = '<h4>Trial Balance</h4><table><tr><th>Ledger</th><th>Debit (₹)</th><th>Credit (₹)</th></tr>';
+  let totalDebit = 0, totalCredit = 0;
+  for (let lName in tb) {
+    const ledgerTotals = tb[lName];
+    let netDebit = 0, netCredit = 0;
+    const balance = ledgerTotals.debit - ledgerTotals.credit;
+    if (balance > 0) {
+        netDebit = balance;
+        totalDebit += balance;
+    } else {
+        netCredit = -balance;
+        totalCredit += -balance;
+    }
+    tbHtml += `<tr><td>${lName}</td><td>${netDebit > 0 ? netDebit.toFixed(2) : ''}</td><td>${netCredit > 0 ? netCredit.toFixed(2) : ''}</td></tr>`;
+  }
+  tbHtml += `<tr><td><b>Total</b></td><td><b>${totalDebit.toFixed(2)}</b></td><td><b>${totalCredit.toFixed(2)}</b></td></tr>`;
+  if (Math.abs(totalDebit - totalCredit) > 0.001) { // Check for imbalance
+    tbHtml += `<tr><td colspan="3" style="color:red; text-align:center;"><b>Trial Balance does not match! Difference: ₹${Math.abs(totalDebit - totalCredit).toFixed(2)}</b></td></tr>`;
   }
   tbHtml += '</table>';
   document.getElementById('trialBalance').innerHTML = tbHtml;
 
-  // P&L and Balance Sheet based on group names
-  const incomeGroups = ['Sales', 'Revenue', 'Income'];
-  const expenseGroups = ['Purchases', 'Expenses', 'Direct Expenses', 'Indirect Expenses'];
-  const assetGroups = ['Assets', 'Current Assets', 'Fixed Assets', 'Sundry Debtors', 'Inventory'];
-  const liabilityGroups = ['Capital', 'Loans', 'Liabilities', 'Sundry Creditors'];
+  // P&L and Balance Sheet
+  const incomeGroups = ['Sales Accounts', 'Direct Incomes', 'Indirect Incomes', 'Revenue'];
+  const expenseGroups = ['Purchase Accounts', 'Direct Expenses', 'Indirect Expenses', 'Expenses'];
+  const assetGroups = ['Fixed Assets', 'Investments', 'Current Assets', 'Sundry Debtors', 'Cash-in-Hand', 'Bank Accounts', 'Stock-in-Hand'];
+  const liabilityGroups = ['Capital Account', 'Loans (Liability)', 'Current Liabilities', 'Sundry Creditors', 'Provisions', 'Reserves & Surplus', 'Secured Loans', 'Unsecured Loans', 'Bank OD A/c'];
 
   let income = 0, expense = 0;
   let assets = 0, liabilities = 0;
+  let stockValue = 0;
+
+  // Calculate stock value for P&L and Balance Sheet
+  if (d.stockItems) {
+    d.stockItems.forEach(item => {
+        const currentQty = item.currentQty !== undefined ? item.currentQty : item.openingQty;
+        stockValue += currentQty * item.openingRate; // Using opening rate for valuation
+    });
+  }
+  // Add Stock-in-Hand as an implicit asset
+  assets += stockValue;
+
 
   d.ledgers.forEach(l => {
-    let total = 0;
-    d.vouchers.forEach(v => {
-      if (v.debit === l.name) total += v.amount;
-      if (v.credit === l.name) total -= v.amount;
-    });
-    if (incomeGroups.includes(l.group)) income += -total;
-    else if (expenseGroups.includes(l.group)) expense += total;
-    else if (assetGroups.includes(l.group)) assets += total;
-    else if (liabilityGroups.includes(l.group)) liabilities += -total;
+    let ledgerBalance = 0;
+    if (tb[l.name]) { // Use pre-calculated trial balance figures
+        ledgerBalance = tb[l.name].debit - tb[l.name].credit;
+    }
+
+    if (incomeGroups.includes(l.group)) income += -ledgerBalance; // Income has credit balance
+    else if (expenseGroups.includes(l.group)) expense += ledgerBalance; // Expense has debit balance
+    else if (assetGroups.includes(l.group) && l.group !== 'Stock-in-Hand') assets += ledgerBalance; // Assets have debit balance
+    else if (liabilityGroups.includes(l.group)) liabilities += -ledgerBalance; // Liabilities have credit balance
   });
 
   const profit = income - expense;
-  if (profit > 0) liabilities += profit;
-  else assets += -profit;
-
+  let netProfitStr = `Net ${profit >= 0 ? 'Profit' : 'Loss'}`;
+  
   document.getElementById('pl').innerHTML =
-    `<h4>Profit & Loss</h4>
-     <p>Income: ₹${income}</p>
-     <p>Expenses: ₹${expense}</p>
-     <p><b>Net ${profit >= 0 ? 'Profit' : 'Loss'}: ₹${Math.abs(profit)}</b></p>`;
+    `<h4>Profit & Loss Account</h4>
+     <p>Total Income: ₹${income.toFixed(2)}</p>
+     <p>Total Expenses: ₹${expense.toFixed(2)}</p>
+     <p><b>${netProfitStr}: ₹${Math.abs(profit).toFixed(2)}</b></p>`;
+
+  // Adjust liabilities/assets with profit/loss for Balance Sheet
+  if (profit >= 0) { // Profit increases capital (liability)
+    liabilities += profit;
+  } else { // Loss decreases capital (effectively an asset side item or reduction from liability)
+    assets += profit; // profit is negative here, so it reduces assets or shows as negative on liability side
+  }
 
   document.getElementById('balanceSheet').innerHTML =
     `<h4>Balance Sheet</h4>
-     <p>Assets: ₹${assets}</p>
-     <p>Liabilities: ₹${liabilities}</p>`;
+     <p>Total Assets (incl. Closing Stock ₹${stockValue.toFixed(2)}): ₹${assets.toFixed(2)}</p>
+     <p>Total Liabilities (incl. ${netProfitStr} ₹${Math.abs(profit).toFixed(2)}): ₹${liabilities.toFixed(2)}</p>` +
+     (Math.abs(assets - liabilities) > 0.01 ? `<p style="color:red;"><b>Balance Sheet does not tally! Difference: ₹${Math.abs(assets - liabilities).toFixed(2)}</b></p>` : `<p style="color:green;"><b>Balance Sheet Tally!</b></p>`);
+
 
   // Inventory report
-  let invHtml = '<h4>Inventory Valuation</h4><table><tr><th>Item</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Total</th></tr>';
-  let totalVal = 0;
-  d.inventory.forEach(i => {
-    const val = i.qty * i.rate;
-    totalVal += val;
-    invHtml += `<tr><td>${i.name}</td><td>${i.qty}</td><td>${i.unit}</td><td>₹${i.rate}</td><td>₹${val}</td></tr>`;
-  });
-  invHtml += `<tr><td colspan="4"><b>Total</b></td><td><b>₹${totalVal}</b></td></tr></table>`;
+  let invHtml = '<h4>Inventory Valuation Report</h4><table><tr><th>Item</th><th>Current Qty</th><th>Unit</th><th>Opening Rate (₹)</th><th>Total Value (₹)</th></tr>';
+  let totalInvVal = 0;
+  if (d.stockItems) {
+    d.stockItems.forEach(item => {
+      const currentQty = item.currentQty !== undefined ? item.currentQty : item.openingQty;
+      const val = currentQty * item.openingRate;
+      totalInvVal += val;
+      invHtml += `<tr><td>${item.name}</td><td>${currentQty}</td><td>${item.unit}</td><td>${item.openingRate.toFixed(2)}</td><td>${val.toFixed(2)}</td></tr>`;
+    });
+  }
+  invHtml += `<tr><td colspan="4"><b>Total Stock Value</b></td><td><b>₹${totalInvVal.toFixed(2)}</b></td></tr></table>`;
   document.getElementById('inventoryReport').innerHTML = invHtml;
 }
 
 function renderDaybook() {
-  const d = getYearData(); if (!d) return;
+  const d = getYearData(); 
   const tbody = document.getElementById('daybookTable');
   tbody.innerHTML = '';
-  d.vouchers.forEach(v => {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>₹${v.amount}<br><i>${v.narration || ''}</i></td>`;
+  if (!d) return;
 
+  d.vouchers.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(v => { // Oldest first for daybook
+    const row = document.createElement('tr');
+    let narrationText = v.narration || '';
+    if (v.inventoryDetails) {
+        narrationText += ` (Item: ${v.inventoryDetails.itemName} Qty: ${v.inventoryDetails.quantity})`;
+    }
+    row.innerHTML = `<td>${v.date}</td><td>${v.type}</td><td>${v.debit}</td><td>${v.credit}</td><td>${v.amount.toFixed(2)}</td><td><i>${narrationText}</i></td>`;
     tbody.appendChild(row);
   });
 }
@@ -914,32 +1451,18 @@ function notifySuccess(msg) {
   const note = document.createElement('div');
   note.textContent = msg;
   Object.assign(note.style, {
-    position: 'fixed',
-    top: '70px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    background: '#28a745',
-    color: '#fff',
-    padding: '10px 16px',
-    borderRadius: '6px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-    zIndex: '9999',
-    fontWeight: '600',
-    fontSize: '15px',
-    fontFamily: 'Segoe UI, sans-serif',
-    maxWidth: '90vw',
-    textAlign: 'center',
-    wordWrap: 'break-word',
-    opacity: '0',
+    position: 'fixed', top: '70px', left: '50%', transform: 'translateX(-50%)',
+    background: '#28a745', color: '#fff', padding: '10px 16px', borderRadius: '6px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)', zIndex: '9999', fontWeight: '600',
+    fontSize: '15px', fontFamily: 'Segoe UI, sans-serif', maxWidth: '90vw',
+    textAlign: 'center', wordWrap: 'break-word', opacity: '0',
     transition: 'opacity 0.4s ease, transform 0.4s ease',
   });
-
   document.body.appendChild(note);
   requestAnimationFrame(() => {
     note.style.opacity = '1';
     note.style.transform = 'translateX(-50%) translateY(5px)';
   });
-
   setTimeout(() => {
     note.style.opacity = '0';
     setTimeout(() => note.remove(), 400);
@@ -950,40 +1473,30 @@ function notifyError(msg) {
   const note = document.createElement('div');
   note.textContent = msg;
   Object.assign(note.style, {
-    position: 'fixed',
-    top: '70px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    background: '#dc3545', // Bootstrap red
-    color: '#fff',
-    padding: '10px 16px',
-    borderRadius: '6px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-    zIndex: '9999',
-    fontWeight: '600',
-    fontSize: '15px',
-    fontFamily: 'Segoe UI, sans-serif',
-    maxWidth: '90vw',
-    textAlign: 'center',
-    wordWrap: 'break-word',
-    opacity: '0',
+    position: 'fixed', top: '70px', left: '50%', transform: 'translateX(-50%)',
+    background: '#dc3545', color: '#fff', padding: '10px 16px', borderRadius: '6px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)', zIndex: '9999', fontWeight: '600',
+    fontSize: '15px', fontFamily: 'Segoe UI, sans-serif', maxWidth: '90vw',
+    textAlign: 'center', wordWrap: 'break-word', opacity: '0',
     transition: 'opacity 0.4s ease, transform 0.4s ease',
   });
-
   document.body.appendChild(note);
   requestAnimationFrame(() => {
     note.style.opacity = '1';
     note.style.transform = 'translateX(-50%) translateY(5px)';
   });
-
   setTimeout(() => {
     note.style.opacity = '0';
     setTimeout(() => note.remove(), 400);
   }, 3000);
 }
 
-
-load(); updateHeader(); showScreen('companyScreen');
+// Initial load
+load(); 
+updateHeader(); 
+showScreen('companyScreen'); // Start with company screen
+// Set default date for voucher screen
+document.getElementById('voucherDate').valueAsDate = new Date();
 </script>
 
 </body>
