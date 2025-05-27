@@ -418,6 +418,8 @@ function addYear() {
   if (!company.years[y]) company.years[y] = { groups: [], ledgers: [], vouchers: [], inventory: [] };
   currentYear = y;
   save(); renderYears(); updateHeader();
+  notifySuccess("Financial year added successfully!");
+
 }
 function selectYear(y) {
   currentYear = y;
@@ -458,6 +460,8 @@ function addGroup() {
   const name = document.getElementById('groupName').value.trim();
   const d = getYearData(); if (!name || !d) return;
   d.groups.push(name); save(); renderGroups();
+  notifySuccess("Group added successfully!");
+
 }
 function renderGroups() {
   const ul = document.getElementById('groupList');
@@ -494,6 +498,8 @@ function addLedger() {
   const d = getYearData(); if (!name || !group || !d) return;
   d.ledgers.push({ name, group });
   save(); renderLedgers(); renderVouchers(); showReports();
+  notifySuccess("Ledger added successfully!");
+
 }
 function renderLedgers() {
   const ul = document.getElementById('ledgerList');
@@ -535,6 +541,7 @@ function addVoucher() {
   const d = getYearData(); if (!debit || !credit || !amount || !date || !d) return;
   d.vouchers.push({ debit, credit, amount, date });
   save(); renderVouchers(); showReports(); renderDaybook();
+  notifySuccess("Voucher added successfully!");
 }
 function renderVouchers() {
   const ul = document.getElementById('voucherList');
@@ -563,6 +570,7 @@ function addItem() {
   const d = getYearData(); if (!name || !qty || !rate || !unit || !d) return;
   d.inventory.push({ name, qty, rate, unit });
   save(); renderItems(); showReports();
+  notifySuccess("Inventory item added successfully!");
 }
 function renderItems() {
   const ul = document.getElementById('inventoryList');
