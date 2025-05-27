@@ -456,6 +456,95 @@ body.dark ul li button:hover {
   }
 }
 
+/* Custom Confirmation Dialog Styles */
+.confirmation-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.confirmation-dialog {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+    color: #333;
+}
+body.dark .confirmation-dialog {
+    background: #2a2a2a;
+    color: #e0e0e0;
+}
+
+.confirmation-dialog p {
+    margin-bottom: 25px;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.confirmation-dialog .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.confirmation-dialog button {
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    max-width: none; /* Override general button max-width */
+    width: auto;
+    display: inline-block; /* Ensure they lay out correctly */
+    margin: 0; /* Remove default button margins */
+}
+
+.confirmation-dialog button.confirm-yes {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    box-shadow: 0 2px 5px rgba(220, 53, 69, 0.4);
+}
+.confirmation-dialog button.confirm-yes:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    transform: translateY(-1px);
+}
+body.dark .confirmation-dialog button.confirm-yes {
+    background: linear-gradient(135deg, #ff6e6e, #e65c5c);
+}
+body.dark .confirmation-dialog button.confirm-yes:hover {
+    background: linear-gradient(135deg, #e65c5c, #cc4444);
+}
+
+
+.confirmation-dialog button.confirm-no {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    box-shadow: 0 2px 5px rgba(108, 117, 125, 0.4);
+}
+.confirmation-dialog button.confirm-no:hover {
+    background: linear-gradient(135deg, #5a6268, #4e555b);
+    transform: translateY(-1px);
+}
+body.dark .confirmation-dialog button.confirm-no {
+    background: linear-gradient(135deg, #444, #555);
+}
+body.dark .confirmation-dialog button.confirm-no:hover {
+    background: linear-gradient(135deg, #555, #666);
+}
 
 </style>
 
@@ -725,14 +814,15 @@ function selectCompany(name) {
   }
 }
 function deleteCompany(name) {
-  if (!confirm(`Are you sure you want to delete company "${name}" and all its data?`)) return;
-  delete data.companies[name];
-  if (currentCompany === name) {
-      currentCompany = '';
-      currentYear = '';
-  }
-  save(); renderCompanies(); updateHeader();
-  notifySuccess(`Company "${name}" deleted.`);
+  showConfirmation(`Are you sure you want to delete company "${name}" and all its data?`, () => {
+    delete data.companies[name];
+    if (currentCompany === name) {
+        currentCompany = '';
+        currentYear = '';
+    }
+    save(); renderCompanies(); updateHeader();
+    notifySuccess(`Company "${name}" deleted.`);
+  });
 }
 function renderCompanies() {
   const ul = document.getElementById('companyList');
@@ -804,11 +894,12 @@ function selectYear(y) {
   showScreen('groupScreen'); // Or dashboard/voucher screen
 }
 function deleteYear(y) {
-  if (!confirm(`Are you sure you want to delete financial year "${y}" and all its data?`)) return;
-  delete data.companies[currentCompany].years[y];
-  if (currentYear === y) currentYear = '';
-  save(); renderYears(); updateHeader();
-  notifySuccess(`Financial year "${y}" deleted.`);
+  showConfirmation(`Are you sure you want to delete financial year "${y}" and all its data?`, () => {
+    delete data.companies[currentCompany].years[y];
+    if (currentYear === y) currentYear = '';
+    save(); renderYears(); updateHeader();
+    notifySuccess(`Financial year "${y}" deleted.`);
+  });
 }
 function renderYears() {
   const ul = document.getElementById('yearList');
@@ -890,10 +981,11 @@ function renderGroups() {
         delBtn.textContent = '❌';
         delBtn.className = 'delete-btn';
         delBtn.onclick = () => {
-          if (!confirm(`Are you sure you want to delete group "${g}"? This might affect ledgers.`)) return;
-          d.groups.splice(i, 1);
-          save(); renderGroups(); renderLedgers();
-          notifySuccess(`Group "${g}" deleted.`);
+          showConfirmation(`Are you sure you want to delete group "${g}"? This might affect ledgers.`, () => {
+            d.groups.splice(i, 1);
+            save(); renderGroups(); renderLedgers();
+            notifySuccess(`Group "${g}" deleted.`);
+          });
         };
         li.appendChild(delBtn);
     }
@@ -936,12 +1028,13 @@ function renderLedgers() {
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
-      if (!confirm(`Are you sure you want to delete ledger "${l.name}"? This might affect vouchers.`)) return;
-      // Find the original index before sorting if needed for splice, or filter it out
-      const originalIndex = d.ledgers.findIndex(ledger => ledger.name === l.name && ledger.group === l.group);
-      if (originalIndex > -1) d.ledgers.splice(originalIndex, 1);
-      save(); renderLedgers(); populateLedgerDropdownsForVoucher(); showReports();
-      notifySuccess(`Ledger "${l.name}" deleted.`);
+      showConfirmation(`Are you sure you want to delete ledger "${l.name}"? This might affect vouchers.`, () => {
+        // Find the original index before sorting if needed for splice, or filter it out
+        const originalIndex = d.ledgers.findIndex(ledger => ledger.name === l.name && ledger.group === l.group);
+        if (originalIndex > -1) d.ledgers.splice(originalIndex, 1);
+        save(); renderLedgers(); populateLedgerDropdownsForVoucher(); showReports();
+        notifySuccess(`Ledger "${l.name}" deleted.`);
+      });
     };
     li.appendChild(delBtn);
     ul.appendChild(li);
@@ -1059,34 +1152,35 @@ function renderVouchers() {
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
-      if (!confirm(`Are you sure you want to delete this voucher?`)) return;
-      
-      const originalIndex = d.vouchers.findIndex(vo => vo.date === v.date && vo.debit === v.debit && vo.credit === v.credit && vo.amount === v.amount && vo.narration === v.narration); // More robust find
-      if (originalIndex === -1) return notifyError("Voucher not found for deletion.");
+      showConfirmation(`Are you sure you want to delete this voucher? This action will reverse any associated stock changes.`, () => {
+        
+        const originalIndex = d.vouchers.findIndex(vo => vo.date === v.date && vo.debit === v.debit && vo.credit === v.credit && vo.amount === v.amount && vo.narration === v.narration); // More robust find
+        if (originalIndex === -1) return notifyError("Voucher not found for deletion.");
 
-      const voucherToDelete = d.vouchers[originalIndex];
+        const voucherToDelete = d.vouchers[originalIndex];
 
-      // Reverse inventory update if applicable
-      if (voucherToDelete.inventoryDetails && (voucherToDelete.type === 'Sales' || voucherToDelete.type === 'Purchase')) {
-        const itemToUpdate = d.stockItems.find(item => item.name === voucherToDelete.inventoryDetails.itemName);
-        if (itemToUpdate) {
-          if (itemToUpdate.currentQty === undefined) itemToUpdate.currentQty = itemToUpdate.openingQty;
-          if (voucherToDelete.type === 'Sales') {
-            itemToUpdate.currentQty += voucherToDelete.inventoryDetails.quantity;
-          } else { // Purchase
-            itemToUpdate.currentQty -= voucherToDelete.inventoryDetails.quantity;
+        // Reverse inventory update if applicable
+        if (voucherToDelete.inventoryDetails && (voucherToDelete.type === 'Sales' || voucherToDelete.type === 'Purchase')) {
+          const itemToUpdate = d.stockItems.find(item => item.name === voucherToDelete.inventoryDetails.itemName);
+          if (itemToUpdate) {
+            if (itemToUpdate.currentQty === undefined) itemToUpdate.currentQty = itemToUpdate.openingQty;
+            if (voucherToDelete.type === 'Sales') {
+              itemToUpdate.currentQty += voucherToDelete.inventoryDetails.quantity;
+            } else { // Purchase
+              itemToUpdate.currentQty -= voucherToDelete.inventoryDetails.quantity;
+            }
           }
         }
-      }
-      d.vouchers.splice(originalIndex, 1);
-      save(); 
-      renderVouchers(); 
-      showReports(); 
-      renderDaybook();
-      renderStockItems();
-      populateVoucherStockItemDropdown();
-      populateAdjustmentItemDropdown();
-      notifySuccess("Voucher deleted.");
+        d.vouchers.splice(originalIndex, 1);
+        save(); 
+        renderVouchers(); 
+        showReports(); 
+        renderDaybook();
+        renderStockItems();
+        populateVoucherStockItemDropdown();
+        populateAdjustmentItemDropdown();
+        notifySuccess("Voucher deleted.");
+      });
     };
     li.appendChild(delBtn);
     ul.appendChild(li);
@@ -1115,7 +1209,11 @@ function renderStockGroups() {
     li.textContent = g;
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌'; delBtn.className = 'delete-btn';
-    delBtn.onclick = () => { d.stockGroups.splice(i, 1); save(); renderStockGroups(); notifySuccess("Stock group deleted.");};
+    delBtn.onclick = () => { 
+      showConfirmation(`Are you sure you want to delete stock group "${g}"?`, () => {
+        d.stockGroups.splice(i, 1); save(); renderStockGroups(); notifySuccess("Stock group deleted.");
+      });
+    };
     li.appendChild(delBtn); ul.appendChild(li);
     const opt = document.createElement('option'); opt.value = g; opt.textContent = g; sel.appendChild(opt);
   });
@@ -1142,7 +1240,11 @@ function renderStockCategories() {
     li.textContent = c;
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌'; delBtn.className = 'delete-btn';
-    delBtn.onclick = () => { d.stockCategories.splice(i, 1); save(); renderStockCategories(); notifySuccess("Stock category deleted.");};
+    delBtn.onclick = () => { 
+      showConfirmation(`Are you sure you want to delete stock category "${c}"?`, () => {
+        d.stockCategories.splice(i, 1); save(); renderStockCategories(); notifySuccess("Stock category deleted.");
+      });
+    };
     li.appendChild(delBtn); ul.appendChild(li);
     const opt = document.createElement('option'); opt.value = c; opt.textContent = c; sel.appendChild(opt);
   });
@@ -1169,7 +1271,11 @@ function renderSKUs() {
     li.textContent = s;
     const delBtn = document.createElement('span');
     delBtn.textContent = '❌'; delBtn.className = 'delete-btn';
-    delBtn.onclick = () => { d.godowns.splice(i, 1); save(); renderSKUs(); notifySuccess("SKU/Location deleted.");};
+    delBtn.onclick = () => { 
+      showConfirmation(`Are you sure you want to delete SKU/Location "${s}"?`, () => {
+        d.godowns.splice(i, 1); save(); renderSKUs(); notifySuccess("SKU/Location deleted.");
+      });
+    };
     li.appendChild(delBtn); ul.appendChild(li);
     const opt = document.createElement('option'); opt.value = s; opt.textContent = s; sel.appendChild(opt);
   });
@@ -1218,14 +1324,25 @@ function renderStockItems() {
     delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
-      if (!confirm(`Are you sure you want to delete stock item "${item.name}"?`)) return;
-      const originalIndex = d.stockItems.findIndex(si => si.name === item.name);
-      if (originalIndex > -1) d.stockItems.splice(originalIndex, 1);
-      save(); 
-      renderStockItems();
-      populateVoucherStockItemDropdown();
-      populateAdjustmentItemDropdown();
-      notifySuccess(`Stock item "${item.name}" deleted.`);
+      showConfirmation(`Are you sure you want to delete stock item "${item.name}"? This will also remove its history from adjustments and vouchers.`, () => {
+        const originalIndex = d.stockItems.findIndex(si => si.name === item.name);
+        if (originalIndex > -1) d.stockItems.splice(originalIndex, 1);
+        
+        // Remove related adjustments and voucher inventory details
+        d.stockAdjustments = d.stockAdjustments.filter(adj => adj.itemName !== item.name);
+        d.vouchers.forEach(v => {
+            if (v.inventoryDetails && v.inventoryDetails.itemName === item.name) {
+                v.inventoryDetails = null; // Clear inventory details for this item
+            }
+        });
+
+        save(); 
+        renderStockItems();
+        populateVoucherStockItemDropdown();
+        populateAdjustmentItemDropdown();
+        renderVouchers(); // Refresh vouchers to reflect cleared inventory details
+        notifySuccess(`Stock item "${item.name}" deleted.`);
+      });
     };
     li.appendChild(delBtn);
     ul.appendChild(li);
@@ -1399,7 +1516,7 @@ function showReports() {
     `<h4>Profit & Loss Account</h4>
      <p>Total Income: ₹${income.toFixed(2)}</p>
      <p>Total Expenses: ₹${expense.toFixed(2)}</p>
-     <p><b>${netProfitStr}: ₹${Math.abs(profit).toFixed(2)}</b></p>`;
+     <p><b>${netProfitStr}: ₹${Math.abs(profit).toFixed(2)}</b></p`;
 
   // Adjust liabilities/assets with profit/loss for Balance Sheet
   if (profit >= 0) { // Profit increases capital (liability)
@@ -1489,6 +1606,53 @@ function notifyError(msg) {
     note.style.opacity = '0';
     setTimeout(() => note.remove(), 400);
   }, 3000);
+}
+
+function showConfirmation(message, onConfirmCallback) {
+    // Check if an overlay already exists to prevent duplicates
+    if (document.querySelector('.confirmation-overlay')) {
+        return;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'confirmation-overlay';
+
+    const dialog = document.createElement('div');
+    dialog.className = 'confirmation-dialog';
+
+    const p = document.createElement('p');
+    p.textContent = message;
+    dialog.appendChild(p);
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'buttons';
+
+    const yesButton = document.createElement('button');
+    yesButton.textContent = 'Yes';
+    yesButton.className = 'confirm-yes';
+    yesButton.onclick = () => {
+        onConfirmCallback();
+        document.body.removeChild(overlay);
+    };
+
+    const noButton = document.createElement('button');
+    noButton.textContent = 'No';
+    noButton.className = 'confirm-no';
+    noButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+
+    buttonContainer.appendChild(yesButton);
+    buttonContainer.appendChild(noButton);
+    dialog.appendChild(buttonContainer);
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    // Animate in
+    requestAnimationFrame(() => {
+        overlay.style.opacity = '1';
+        dialog.style.transform = 'translateY(0)';
+    });
 }
 
 // Initial load
