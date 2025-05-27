@@ -410,12 +410,24 @@ function updateHeader() {
   document.getElementById('currentYear').textContent = 'Year: ' + (currentYear || 'None');
 }
 
+const defaultGroups = [
+  'Capital', 'Loans', 'Sales', 'Purchases',
+  'Expenses', 'Revenue', 'Assets', 'Liabilities',
+  'Fixed Assets', 'Current Assets',
+  'Direct Expenses', 'Indirect Expenses',
+  'Sundry Debtors', 'Sundry Creditors'
+];
+
 function addYear() {
   if (!currentCompany) return alert("Select company");
   const y = document.getElementById('yearInput').value.trim();
   if (!y) return;
   const company = data.companies[currentCompany];
   if (!company.years[y]) company.years[y] = { groups: [], ledgers: [], vouchers: [], inventory: [] };
+  if (company.years[y].groups.length === 0) {
+  company.years[y].groups.push(...defaultGroups);
+}
+
   currentYear = y;
   save(); renderYears(); updateHeader();
   notifySuccess("Financial year added successfully!");
