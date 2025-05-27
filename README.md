@@ -1,1 +1,1 @@
-# srtallie
+Mobile Friendly Accountancy App
