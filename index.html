@@ -376,6 +376,8 @@ function createCompany() {
   if (!data.companies[name]) data.companies[name] = { years: {} };
   currentCompany = name;
   save(); renderCompanies(); updateHeader();
+  notifySuccess("Company created successfully!");
+
 }
 function selectCompany(name) {
   currentCompany = name; renderCompanies(); updateHeader();
@@ -657,6 +659,42 @@ function renderDaybook() {
     row.innerHTML = `<td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>₹${v.amount}</td>`;
     tbody.appendChild(row);
   });
+}
+  
+function notifySuccess(msg) {
+  const note = document.createElement('div');
+  note.textContent = msg;
+  Object.assign(note.style, {
+    position: 'fixed',
+    top: '70px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    background: '#28a745',
+    color: '#fff',
+    padding: '10px 16px',
+    borderRadius: '6px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+    zIndex: '9999',
+    fontWeight: '600',
+    fontSize: '15px',
+    fontFamily: 'Segoe UI, sans-serif',
+    maxWidth: '90vw',
+    textAlign: 'center',
+    wordWrap: 'break-word',
+    opacity: '0',
+    transition: 'opacity 0.4s ease, transform 0.4s ease',
+  });
+
+  document.body.appendChild(note);
+  requestAnimationFrame(() => {
+    note.style.opacity = '1';
+    note.style.transform = 'translateX(-50%) translateY(5px)';
+  });
+
+  setTimeout(() => {
+    note.style.opacity = '0';
+    setTimeout(() => note.remove(), 400);
+  }, 2500);
 }
 
 load(); updateHeader(); showScreen('companyScreen');
