@@ -303,6 +303,14 @@
   <select id="credit"></select>
   <input id="amount" placeholder="Amount" type="number">
   <input id="voucherDate" type="date">
+  <select id="voucherType">
+  <option>Purchase</option>
+  <option>Sales</option>
+  <option>Payment</option>
+  <option>Receipt</option>
+  <option>Journal</option>
+  <option>Contra</option>
+  </select>
   <button onclick="addVoucher()">Add</button>
   <ul id="voucherList"></ul>
 </section>
@@ -551,7 +559,8 @@ function addVoucher() {
   const amount = parseFloat(document.getElementById('amount').value);
   const date = document.getElementById('voucherDate').value;
   const d = getYearData(); if (!debit || !credit || !amount || !date || !d) return;
-  d.vouchers.push({ debit, credit, amount, date });
+  const type = document.getElementById('voucherType').value;
+  d.vouchers.push({ debit, credit, amount, date, type })
   save(); renderVouchers(); showReports(); renderDaybook();
   notifySuccess("Voucher added successfully!");
 }
