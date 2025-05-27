@@ -936,7 +936,7 @@ function renderYears() {
     
     // Delete button
     const delBtn = document.createElement('span');
-    delBtn.textContent = '❌';
+    delBtn.textContent = '⛔';
     delBtn.className = 'delete-btn';
     delBtn.onclick = (e) => { e.stopPropagation(); deleteYear(y); };
     btnDiv.appendChild(delBtn); // Append delete button first
