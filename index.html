@@ -356,6 +356,10 @@ function load() {
   if (d) data = JSON.parse(d);
 }
 function showScreen(id) {
+   if (window.innerWidth <= 768) {
+    document.getElementById('sideMenu').classList.remove('open');
+  }
+
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
   document.getElementById(id).classList.add('visible');
   if (id === 'companyScreen') renderCompanies();
