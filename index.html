@@ -409,6 +409,7 @@ body.dark .notification {
   <option>Journal</option>
   <option>Contra</option>
   </select>
+  <textarea id="narration" placeholder="Narration"></textarea>
   <button onclick="addVoucher()">Add</button>
   <ul id="voucherList"></ul>
 </section>
@@ -663,7 +664,8 @@ function addVoucher() {
   const date = document.getElementById('voucherDate').value;
   const d = getYearData(); if (!debit || !credit || !amount || !date || !d) return;
   const type = document.getElementById('voucherType').value;
-  d.vouchers.push({ debit, credit, amount, date, type })
+  const narration = document.getElementById('narration').value.trim();
+  d.vouchers.push({ debit, credit, amount, date, type, narration });
   save(); renderVouchers(); showReports(); renderDaybook();
   notifySuccess("Voucher added successfully!");
 }
@@ -788,7 +790,7 @@ function renderDaybook() {
   tbody.innerHTML = '';
   d.vouchers.forEach(v => {
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>₹${v.amount}</td>`;
+    row.innerHTML = `<td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>₹${v.amount}<br><i>${v.narration || ''}</i></td>`;
     tbody.appendChild(row);
   });
 }
