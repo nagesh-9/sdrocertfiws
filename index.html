@@ -623,10 +623,10 @@ function showReports() {
   document.getElementById('trialBalance').innerHTML = tbHtml;
 
   // P&L and Balance Sheet based on group names
-  const incomeGroups = ['Sales', 'Revenue', 'Income','Sundry Debtors'];
-  const expenseGroups = ['Purchases', 'Expenses', 'Direct Expenses', 'Indirect Expenses','Sundry Creditors'];
-  const assetGroups = ['Assets', 'Current Assets', 'Fixed Assets'];
-  const liabilityGroups = ['Capital', 'Loans', 'Liabilities'];
+  const incomeGroups = ['Sales', 'Revenue', 'Income'];
+  const expenseGroups = ['Purchases', 'Expenses', 'Direct Expenses', 'Indirect Expenses'];
+  const assetGroups = ['Assets', 'Current Assets', 'Fixed Assets', 'Sundry Debtors', 'Inventory'];
+  const liabilityGroups = ['Capital', 'Loans', 'Liabilities', 'Sundry Creditors'];
 
   let income = 0, expense = 0;
   let assets = 0, liabilities = 0;
