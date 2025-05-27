@@ -439,20 +439,36 @@ body.dark ul li button:hover {
 
 @media (max-width: 768px) {
   ul li {
-    /* flex-direction: column; /* Stack items vertically */
-    /* align-items: flex-start; /* Align to the start */
+    flex-direction: row; /* Keep items in a row */
+    align-items: center; /* Center align items vertically */
+    padding: 8px 12px; /* Slightly reduce padding */
   }
 
-  ul li div { /* This was for a specific layout, might need adjustment */
-    margin-top: 0;
+  ul li div.action-buttons {
+    margin-top: 0; /* Remove top margin */
     display: flex;
-    gap: 8px;
-    width: 100%; /* Make button container full width */
+    gap: 8px; /* Consistent gap between buttons */
+    width: auto; /* Don't force full width */
     justify-content: flex-end; /* Align buttons to the end */
-    margin-top: 8px;
+    flex-wrap: nowrap; /* Prevent wrapping */
   }
-  ul li span:first-child { /* Text content */
-    width: 100%;
+
+  ul li span:first-child {
+    flex: 1; /* Allow text to take available space */
+    min-width: 0; /* Allow text to shrink if needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  ul li button, 
+  ul li .delete-btn {
+    font-size: 12px; /* Slightly smaller font for buttons */
+    padding: 4px 8px; /* Smaller padding for buttons */
+  }
+
+  .delete-btn {
+    margin-left: 0; /* Remove left margin since gap handles spacing */
   }
 }
 
