@@ -237,7 +237,7 @@
       color: gold;
     }
   }
- /* ===== Enhanced Dark Mode ===== */
+/* ===== Enhanced Dark Mode ===== */
 body.dark {
   background: #121212;
   color: #e0e0e0;
@@ -333,6 +333,70 @@ body.dark #darkModeToggle:hover {
 body.dark .notification {
   background: #3700b3;
 }
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f7f9ff;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 45, 102, 0.1);
+  font-weight: 500;
+  color: #2a2f45;
+  transition: background 0.3s ease;
+}
+
+ul li:hover {
+  background: #e6f0ff;
+}
+
+ul li span.delete-btn {
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #d93025;
+  cursor: pointer;
+}
+
+ul li button {
+  margin-left: 10px;
+  font-size: 14px;
+  padding: 6px 12px;
+  background: #004d99;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+ul li button:hover {
+  background: #002b66;
+}
+
+@media (max-width: 768px) {
+  ul li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  ul li div {
+    margin-top: 6px;
+    display: flex;
+    gap: 8px;
+  }
+}
+
+
+
 
 </style>
 
@@ -484,7 +548,7 @@ function showScreen(id) {
 
 function createCompany() {
   const name = document.getElementById('companyName').value.trim();
-  if (!name) return;
+  if (!name) return notifyError("Company name is required.");
   if (!data.companies[name]) data.companies[name] = { years: {} };
   currentCompany = name;
   save(); renderCompanies(); updateHeader();
@@ -506,7 +570,7 @@ function renderCompanies() {
     const li = document.createElement('li');
     li.textContent = name + (name === currentCompany ? ' (selected)' : '');
     const delBtn = document.createElement('span');
-    delBtn.textContent = ' [-]';
+    delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => deleteCompany(name);
     const selBtn = document.createElement('button');
@@ -531,9 +595,9 @@ const defaultGroups = [
 ];
 
 function addYear() {
-  if (!currentCompany) return alert("Select company");
+  if (!currentCompany) return notifyError("Select a company first.");
   const y = document.getElementById('yearInput').value.trim();
-  if (!y) return;
+  if (!y) return notifyError("Financial year is required.");
   const company = data.companies[currentCompany];
   if (!company.years[y]) company.years[y] = { groups: [], ledgers: [], vouchers: [], inventory: [] };
   if (company.years[y].groups.length === 0) {
@@ -563,7 +627,7 @@ function renderYears() {
     const li = document.createElement('li');
     li.textContent = y + (y === currentYear ? ' (selected)' : '');
     const delBtn = document.createElement('span');
-    delBtn.textContent = ' [-]';
+    delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => deleteYear(y);
     const selBtn = document.createElement('button');
@@ -582,7 +646,9 @@ function getYearData() {
 
 function addGroup() {
   const name = document.getElementById('groupName').value.trim();
-  const d = getYearData(); if (!name || !d) return;
+  const d = getYearData(); if (!d) return notifyError("Select a company and year first.");
+if (!name) return notifyError("Group name is required.");
+
   d.groups.push(name); save(); renderGroups();
   notifySuccess("Group added successfully!");
 
@@ -595,7 +661,7 @@ function renderGroups() {
     const li = document.createElement('li');
     li.textContent = g;
     const delBtn = document.createElement('span');
-    delBtn.textContent = ' [-]';
+    delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
       d.groups.splice(i, 1);
@@ -619,7 +685,9 @@ function renderGroups() {
 function addLedger() {
   const name = document.getElementById('ledgerName').value.trim();
   const group = document.getElementById('ledgerGroup').value;
-  const d = getYearData(); if (!name || !group || !d) return;
+  const d = getYearData(); if (!d) return notifyError("Select a company and year first.");
+  if (!name) return notifyError("Ledger name is required.");
+  if (!group) return notifyError("Please select a group for the ledger.");
   d.ledgers.push({ name, group });
   save(); renderLedgers(); renderVouchers(); showReports();
   notifySuccess("Ledger added successfully!");
@@ -633,7 +701,7 @@ function renderLedgers() {
     const li = document.createElement('li');
     li.textContent = `${l.name} (${l.group})`;
     const delBtn = document.createElement('span');
-    delBtn.textContent = ' [-]';
+    delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
       d.ledgers.splice(i, 1);
@@ -662,13 +730,35 @@ function addVoucher() {
   const credit = document.getElementById('credit').value;
   const amount = parseFloat(document.getElementById('amount').value);
   const date = document.getElementById('voucherDate').value;
-  const d = getYearData(); if (!debit || !credit || !amount || !date || !d) return;
   const type = document.getElementById('voucherType').value;
   const narration = document.getElementById('narration').value.trim();
+  const d = getYearData();
+
+    if (!d) return notifyError("Select a company and financial year first.");
+  if (!debit || !credit || !amount || !date || !type) {
+    return notifyError("Please fill in all the fields.");
+  }
+  if (debit === credit) {
+    return notifyError("Debit and Credit cannot be the same ledger.");
+  }
+  if (isNaN(amount) || amount <= 0) {
+    return notifyError("Amount must be a positive number.");
+  }
+  if (narration.length > 200) {
+    return notifyError("Narration is too long (limit to 200 characters).");
+  }
+
+  // Add Voucher
   d.vouchers.push({ debit, credit, amount, date, type, narration });
   save(); renderVouchers(); showReports(); renderDaybook();
   notifySuccess("Voucher added successfully!");
+
+  // Optional: Clear form after successful entry
+  document.getElementById('amount').value = '';
+  document.getElementById('voucherDate').value = '';
+  document.getElementById('narration').value = '';
 }
+
 function renderVouchers() {
   const ul = document.getElementById('voucherList');
   const d = getYearData(); if (!d) return;
@@ -677,7 +767,7 @@ function renderVouchers() {
     const li = document.createElement('li');
     li.textContent = `${v.date}: ${v.debit} Dr <- ${v.credit} Cr = ₹${v.amount}`;
     const delBtn = document.createElement('span');
-    delBtn.textContent = ' [-]';
+    delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
       d.vouchers.splice(i, 1);
@@ -693,7 +783,12 @@ function addItem() {
   const qty = parseFloat(document.getElementById('itemQty').value);
   const rate = parseFloat(document.getElementById('itemRate').value);
   const unit = document.getElementById('itemUnit').value.trim();
-  const d = getYearData(); if (!name || !qty || !rate || !unit || !d) return;
+  const d = getYearData(); if (!d) return notifyError("Select a company and year first.");
+  if (!name) return notifyError("Item name is required.");
+  if (!unit) return notifyError("Item unit is required.");
+  if (isNaN(qty) || qty <= 0) return notifyError("Quantity must be a positive number.");
+  if (isNaN(rate) || rate <= 0) return notifyError("Rate must be a positive number.");
+
   d.inventory.push({ name, qty, rate, unit });
   save(); renderItems(); showReports();
   notifySuccess("Inventory item added successfully!");
@@ -706,7 +801,7 @@ function renderItems() {
     const li = document.createElement('li');
     li.textContent = `${item.name}: ${item.qty} ${item.unit} @ ₹${item.rate}`;
     const delBtn = document.createElement('span');
-    delBtn.textContent = ' [-]';
+    delBtn.textContent = '❌';
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
       d.inventory.splice(i, 1);
@@ -791,6 +886,7 @@ function renderDaybook() {
   d.vouchers.forEach(v => {
     const row = document.createElement('tr');
     row.innerHTML = `<td>${v.date}</td><td>${v.debit}</td><td>${v.credit}</td><td>₹${v.amount}<br><i>${v.narration || ''}</i></td>`;
+
     tbody.appendChild(row);
   });
 }
@@ -830,6 +926,43 @@ function notifySuccess(msg) {
     setTimeout(() => note.remove(), 400);
   }, 2500);
 }
+
+function notifyError(msg) {
+  const note = document.createElement('div');
+  note.textContent = msg;
+  Object.assign(note.style, {
+    position: 'fixed',
+    top: '70px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    background: '#dc3545', // Bootstrap red
+    color: '#fff',
+    padding: '10px 16px',
+    borderRadius: '6px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+    zIndex: '9999',
+    fontWeight: '600',
+    fontSize: '15px',
+    fontFamily: 'Segoe UI, sans-serif',
+    maxWidth: '90vw',
+    textAlign: 'center',
+    wordWrap: 'break-word',
+    opacity: '0',
+    transition: 'opacity 0.4s ease, transform 0.4s ease',
+  });
+
+  document.body.appendChild(note);
+  requestAnimationFrame(() => {
+    note.style.opacity = '1';
+    note.style.transform = 'translateX(-50%) translateY(5px)';
+  });
+
+  setTimeout(() => {
+    note.style.opacity = '0';
+    setTimeout(() => note.remove(), 400);
+  }, 3000);
+}
+
 
 load(); updateHeader(); showScreen('companyScreen');
 </script>
