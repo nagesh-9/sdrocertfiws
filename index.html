@@ -451,6 +451,8 @@ body.dark ul li button:hover {
     width: auto; /* Don't force full width */
     justify-content: flex-end; /* Align buttons to the end */
     flex-wrap: nowrap; /* Prevent wrapping */
+    flex-shrink: 0; /* Prevent shrinking */
+    min-width: fit-content;
   }
 
   ul li span:first-child {
