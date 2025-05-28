@@ -783,6 +783,83 @@ body.dark .confirmation-dialog input {
     <h3>Settings</h3>
     <button id="darkModeToggle" onclick="document.body.classList.toggle('dark')">🌙 Toggle Dark Mode</button>
     <button id="refreshAppButton" onclick="refreshApp()">🔄 Refresh App</button>
+    <button id="appGuideButton" onclick="showScreen('appGuideScreen')">📚 App Guide</button>
+</section>
+
+<section id="appGuideScreen" class="screen">
+    <h3>📚 App Guide: SWIFT RECORDS</h3>
+    <p>Welcome to SWIFT RECORDS, your personal accounting practice app! This guide will help you navigate the app and ensure accurate entries for correct report generation.</p>
+
+    <h4>App Navigation</h4>
+    <ul>
+        <li>The <strong>side menu</strong> on the left allows you to switch between different modules of the app.</li>
+        <li>Click on any button in the side menu (e.g., Company, Ledgers, Vouchers) to open its respective screen.</li>
+        <li>On mobile, the <strong>☰ (Menu)</strong> icon in the header will toggle the side menu.</li>
+    </ul>
+
+    <h4>Important Modules & Tips</h4>
+
+    <h5>1. Company & Financial Year</h5>
+    <ul>
+        <li><strong>Purpose:</strong> Start by creating a Company and then a Financial Year. All your accounting data is stored within a specific Company and Year.</li>
+        <li><strong>Tip:</strong> Always ensure you have selected the correct Company and Financial Year from the respective screens before making any entries. The selected Company and Year are shown in the header.</li>
+        <li><strong>Edit/Delete:</strong> Use the 'Select', '🪶 Edit', and '⛔ Delete' buttons to manage your companies and years. Editing renames, deleting permanently removes all associated data.</li>
+    </ul>
+
+    <h5>2. Groups & Ledgers</h5>
+    <ul>
+        <li><strong>Groups:</strong> These are categories for your ledgers (e.g., Current Assets, Capital Account, Sales Accounts). They help in organizing your accounts and generating financial reports.</li>
+        <li><strong>Ledgers:</strong> These are individual accounts (e.g., Cash, Bank, Sales, Purchases, Rent Expense, Capital). Every transaction involves at least two ledgers.</li>
+        <li><strong>Tip:</strong> Assign ledgers to the correct groups to ensure they appear under the right heads in your Profit & Loss Account and Balance Sheet. Default ledgers like 'Stock-in-Hand', 'Cost of Goods Sold', and 'Stock Adjustment Account' are automatically created.</li>
+    </ul>
+
+    <h5>3. Vouchers (Transactions)</h5>
+    <ul>
+        <li><strong>Purpose:</strong> This is where you record all your financial transactions.</li>
+        <li><strong>Debit/Credit:</strong> Every transaction has a Debit and a Credit entry. Remember the golden rules of accounting:
+            <ul>
+                <li><strong>Personal Account:</strong> Debit the Receiver, Credit the Giver.</li>
+                <li><strong>Real Account:</strong> Debit what comes in, Credit what goes out.</li>
+                <li><strong>Nominal Account:</strong> Debit all expenses and losses, Credit all incomes and gains.</li>
+            </ul>
+        </li>
+        <li><strong>Voucher Types:</strong>
+            <ul>
+                <li><strong>Purchase:</strong> For buying goods/services (Debit Purchase A/c or Asset, Credit Cash/Bank/Creditor). If it's a stock item purchase, 'Stock-in-Hand' will be debited.</li>
+                <li><strong>Sales:</strong> For selling goods/services (Debit Cash/Bank/Debtor, Credit Sales A/c). If it's a stock item sale, 'Cost of Goods Sold' will also be debited and 'Stock-in-Hand' credited automatically.</li>
+                <li><strong>Payment:</strong> For making payments (Debit Expense/Asset, Credit Cash/Bank).</li>
+                <li><strong>Receipt:</strong> For receiving money (Debit Cash/Bank, Credit Income/Liability).</li>
+                <li><strong>Journal:</strong> For non-cash transactions, adjustments, or transfers between ledgers (e.g., depreciation, outstanding expenses).</li>
+                <li><strong>Contra:</strong> For cash deposits into bank or cash withdrawals from bank (involves only Cash and Bank ledgers).</li>
+            </ul>
+        </li>
+        <li><strong>Narration:</strong> Always add a clear narration to explain the transaction.</li>
+        <li><strong>Inventory Details:</strong> For 'Purchase' and 'Sales' vouchers, ensure you select the correct 'Stock Item' and 'Quantity'. This automatically updates your inventory.</li>
+    </ul>
+
+    <h5>4. Stock Master & Stock Adjustments</h5>
+    <ul>
+        <li><strong>Stock Master:</strong> Define your stock items, their groups, categories, units, and locations (SKUs). Set their opening quantities and rates.</li>
+        <li><strong>Stock Adjustments:</strong> Use this screen to manually increase or decrease stock quantities for reasons like damage, theft, or opening stock corrections. This will also create a journal entry to reflect the value change in your 'Stock-in-Hand' and 'Stock Adjustment Account' ledgers.</li>
+    </ul>
+
+    <h5>5. Reports</h5>
+    <ul>
+        <li><strong>Daybook:</strong> A chronological record of all your vouchers for the selected financial year.</li>
+        <li><strong>Trial Balance:</strong> Lists all ledger accounts with their final debit or credit balances. <strong>Key Tip: A correct Trial Balance should always have Total Debits equal to Total Credits.</strong> If it doesn't tally, there's an error in your voucher entries.</li>
+        <li><strong>Profit & Loss Account:</strong> Shows your total income, total expenses, and calculates the net profit or loss for the financial year.</li>
+        <li><strong>Balance Sheet:</strong> Presents your assets, liabilities, and capital at a specific point in time. <strong>Key Tip: A correct Balance Sheet should always tally (Assets = Liabilities + Capital).</strong> If it doesn't, revisit your entries.</li>
+        <li><strong>Inventory Valuation Report:</strong> Provides a summary of your current stock items and their calculated values.</li>
+    </ul>
+
+    <h4>General Tips for Accuracy</h4>
+    <ul>
+        <li><strong>Double-Check:</strong> Always review your entries before saving.</li>
+        <li><strong>Understand Concepts:</strong> Ensure you understand the accounting principles (debit/credit, types of accounts) behind each transaction.</li>
+        <li><strong>Regularly Check Reports:</strong> Use the Trial Balance and Balance Sheet frequently to catch errors early.</li>
+        <li><strong>Use Narration:</strong> Clear narrations make it easier to understand and audit your entries later.</li>
+    </ul>
+    <p>Happy Accounting Practice!</p>
 </section>
 
 <script>
@@ -861,6 +938,8 @@ function showScreen(id) {
     renderSKUs();
     renderStockItems();
   }
+  // No specific render function needed for appGuideScreen as its content is static
+  // if (id === 'appGuideScreen') { /* No dynamic content to render */ }
 }
 
 document.getElementById('voucherType').addEventListener('change', handleVoucherTypeChange);
@@ -997,7 +1076,7 @@ const defaultGroups = [
 function addYear() {
   if (!currentCompany) return notifyError("Select a company first.");
   const y = document.getElementById('yearInput').value.trim();
-  if (!y.match(/^\d{4}-\d{2}$/)) return notifyError("Year format must be YYYY-YY (e.g., 2024-25).");
+  if (!y.match(/^\d{4}-\d{2}$/)) return notifyError("Year format must beYYYY-YY (e.g., 2024-25).");
   const company = data.companies[currentCompany];
   if (company.years[y]) return notifyError(`Financial Year "${y}" already exists.`); // Check for existence
 
@@ -1065,7 +1144,7 @@ function editYear(oldName) {
             return;
         }
         if (!newName.match(/^\d{4}-\d{2}$/)) {
-            notifyError("New year format must be YYYY-YY (e.g., 2024-25).");
+            notifyError("New year format must beYYYY-YY (e.g., 2024-25).");
             return;
         }
         if (newName === oldName) {
