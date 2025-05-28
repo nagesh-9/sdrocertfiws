@@ -729,6 +729,7 @@ body.dark .confirmation-dialog button.confirm-no:hover {
 <section id="settingsScreen" class="screen">
     <h3>Settings</h3>
     <button id="darkModeToggle" onclick="document.body.classList.toggle('dark')">🌙 Toggle Dark Mode</button>
+    <button id="refreshAppButton" onclick="refreshApp()">🔄 Refresh App</button>
 </section>
 
 <script>
@@ -1825,6 +1826,13 @@ function showConfirmation(message, onConfirmCallback) {
         overlay.style.opacity = '1';
         dialog.style.transform = 'translateY(0)';
     });
+}
+
+// Function to refresh the app code, bypassing browser cache
+function refreshApp() {
+    // This will force the browser to reload all resources from the server,
+    // effectively updating the app's code. localStorage data remains untouched.
+    window.location.reload(true); 
 }
 
 // Initial load
