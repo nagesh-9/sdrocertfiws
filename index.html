@@ -41,6 +41,13 @@
     font-size: 22px;
     font-weight: 700;
     letter-spacing: 1px;
+    flex-shrink: 0; /* Prevent shrinking */
+  }
+
+  .info {
+    display: flex; /* Make info a flex container */
+    align-items: center;
+    flex-shrink: 0; /* Prevent info block from shrinking */
   }
 
   .info span {
@@ -49,6 +56,9 @@
     font-size: 14px;
     font-weight: 600;
     text-shadow: 0 0 3px rgba(255, 222, 89, 0.7);
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow content */
+    text-overflow: ellipsis; /* Show ellipsis for overflow */
   }
 
   /* Menu toggle (mobile) */
@@ -224,6 +234,24 @@
 
   /* Responsive */
   @media (max-width: 768px) {
+    header {
+      padding: 0 12px; /* Reduce padding on mobile */
+      flex-wrap: nowrap; /* Prevent header children from wrapping */
+    }
+
+    header h2 {
+      font-size: 18px; /* Smaller font for main title */
+    }
+
+    .info {
+      gap: 5px; /* Reduce gap between company and year */
+    }
+
+    .info span {
+      margin-left: 10px; /* Reduce margin between spans */
+      font-size: 12px; /* Smaller font for company/year info */
+    }
+
     nav.menu {
       position: fixed;
       top: 60px;
