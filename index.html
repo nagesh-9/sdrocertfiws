@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>SWIFT RECORDS</title>
-  <meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=0.75">
-
-<meta name="mobile-web-app-capable" content="yes">
-
-
- <style>
+  <meta name="viewport" content="width=device-width, initial-scale=0.75">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
   /* Reset & Base */
   body {
     margin: 0;
@@ -398,7 +393,7 @@ ul {
 }
 
 ul li {
-  display: flex;
+  display: flex; /* Make list items flex containers */
   justify-content: space-between;
   align-items: center;
   background: #f7f9ff;
@@ -409,7 +404,7 @@ ul li {
   font-weight: 500;
   color: #2a2f45;
   transition: background 0.3s ease;
-  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  flex-wrap: nowrap; /* Prevent wrapping for the main li content */
 }
 body.dark ul li {
     background: #2d2d2d;
@@ -430,18 +425,29 @@ ul li:hover {
   display: flex;
   align-items: center;
   gap: 8px; /* Space between delete and select buttons */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+  margin-left: 15px; /* Add some space between text and buttons */
 }
 
-ul li span.delete-btn {
-  /* Removed margin-left as gap on parent handles spacing */
+ul li span.delete-btn,
+ul li span.edit-btn { /* Style for edit button icon */
   font-size: 14px;
   font-weight: bold;
-  color: #d93025;
+  color: #d93025; /* Red for delete */
   cursor: pointer;
+  user-select: none;
+  transition: color 0.3s ease;
 }
 
+ul li span.edit-btn {
+    color: #0052cc; /* Blue for edit */
+}
+body.dark ul li span.edit-btn {
+    color: #bb86fc; /* Purple for dark mode edit */
+}
+
+
 ul li button {
-  /* Removed margin-left and vertical margins */
   font-size: 14px;
   padding: 6px 12px;
   background: #004d99;
@@ -450,8 +456,7 @@ ul li button {
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s ease;
-  /* margin-top: 5px; /* Add some margin for wrapped buttons */
-  /* margin-bottom: 5px; */
+  margin: 0; /* Remove default button margins */
 }
 
 ul li button:hover {
@@ -475,12 +480,13 @@ body.dark ul li button:hover {
   ul li div.action-buttons {
     margin-top: 0; /* Remove top margin */
     display: flex;
-    gap: 16px; /* Consistent gap between buttons */
+    gap: 10px; /* Consistent gap between buttons */
     width: auto; /* Don't force full width */
     justify-content: flex-end; /* Align buttons to the end */
     flex-wrap: nowrap; /* Prevent wrapping */
     flex-shrink: 0; /* Prevent shrinking */
     min-width: fit-content;
+    margin-left: 10px; /* Adjust margin for mobile */
   }
 
   ul li span:first-child {
@@ -492,13 +498,14 @@ body.dark ul li button:hover {
   }
 
   ul li button, 
-  ul li .delete-btn {
+  ul li .delete-btn,
+  ul li .edit-btn { /* Apply to edit button too */
     font-size: 18px; /* Slightly smaller font for buttons */
     padding: 4px 8px; /* Smaller padding for buttons */
   }
 
-  .delete-btn {
-    margin-left: 0; /* Remove left margin since gap handles spacing */
+  .delete-btn, .edit-btn { /* Remove left margin for icons */
+    margin-left: 0; 
   }
   
  
@@ -593,6 +600,24 @@ body.dark .confirmation-dialog button.confirm-no:hover {
     background: linear-gradient(135deg, #555, #666);
 }
 
+/* Custom Input for Confirmation Dialog (for edit function) */
+.confirmation-dialog input {
+    width: calc(100% - 20px); /* Adjust width for padding */
+    padding: 10px;
+    margin: 15px auto; /* Center the input */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    display: block; /* Ensure it takes its own line */
+    box-sizing: border-box; /* Include padding in width */
+}
+body.dark .confirmation-dialog input {
+    background: #333;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+
 </style>
 
 
@@ -667,7 +692,7 @@ body.dark .confirmation-dialog button.confirm-no:hover {
     <option>Purchase</option>
     <option>Sales</option>
     <option>Payment</option>
-    <option>Receipt</option>
+    <option>Receipt</moption>
     <option>Journal</option>
     <option>Contra</option>
   </select>
@@ -855,12 +880,14 @@ function handleVoucherTypeChange() {
 function createCompany() {
   const name = document.getElementById('companyName').value.trim();
   if (!name) return notifyError("Company name is required.");
+  if (data.companies[name]) return notifyError(`Company "${name}" already exists.`); // Check for existence
   if (!data.companies[name]) data.companies[name] = { years: {} };
   currentCompany = name;
   save(); renderCompanies(); updateHeader();
   notifySuccess("Company created successfully!");
   document.getElementById('companyName').value = '';
 }
+
 function selectCompany(name) {
   currentCompany = name;
   currentYear = ''; // Reset year when company changes
@@ -872,6 +899,37 @@ function selectCompany(name) {
     notifySuccess(`Company "${name}" selected. Please add or select a financial year.`);
   }
 }
+
+function editCompany(oldName) {
+    showInputConfirmation(`Edit Company Name`, `Enter new name for "${oldName}":`, oldName, (newName) => {
+        newName = newName.trim();
+        if (!newName) {
+            notifyError("New company name cannot be empty.");
+            return;
+        }
+        if (newName === oldName) {
+            notifyError("New name is the same as the old name.");
+            return;
+        }
+        if (data.companies[newName]) {
+            notifyError(`Company "${newName}" already exists.`);
+            return;
+        }
+
+        // Perform the rename: copy data to new key, then delete old key
+        data.companies[newName] = data.companies[oldName];
+        delete data.companies[oldName];
+
+        if (currentCompany === oldName) {
+            currentCompany = newName;
+        }
+        save();
+        renderCompanies();
+        updateHeader();
+        notifySuccess(`Company "${oldName}" renamed to "${newName}".`);
+    });
+}
+
 function deleteCompany(name) {
   showConfirmation(`Are you sure you want to delete company "${name}" and all its data?`, () => {
     delete data.companies[name];
@@ -883,6 +941,7 @@ function deleteCompany(name) {
     notifySuccess(`Company "${name}" deleted.`);
   });
 }
+
 function renderCompanies() {
   const ul = document.getElementById('companyList');
   ul.innerHTML = '';
@@ -895,23 +954,31 @@ function renderCompanies() {
     const btnDiv = document.createElement('div');
     btnDiv.classList.add('action-buttons'); // Add class for styling
     
+    // Select button
+    const selBtn = document.createElement('button');
+    selBtn.textContent = 'Select';
+    selBtn.onclick = (e) => { e.stopPropagation(); selectCompany(name); };
+    btnDiv.appendChild(selBtn); 
+
+    // Edit button
+    const editBtn = document.createElement('span');
+    editBtn.textContent = '🪶';
+    editBtn.className = 'edit-btn';
+    editBtn.onclick = (e) => { e.stopPropagation(); editCompany(name); };
+    btnDiv.appendChild(editBtn);
+
     // Delete button
     const delBtn = document.createElement('span');
     delBtn.textContent = '⛔';
     delBtn.className = 'delete-btn';
     delBtn.onclick = (e) => { e.stopPropagation(); deleteCompany(name); };
-    btnDiv.appendChild(delBtn); // Append delete button first
-
-    // Select button
-    const selBtn = document.createElement('button');
-    selBtn.textContent = 'Select';
-    selBtn.onclick = (e) => { e.stopPropagation(); selectCompany(name); };
-    btnDiv.appendChild(selBtn); // Append select button second
+    btnDiv.appendChild(delBtn); 
     
     li.appendChild(btnDiv);
     ul.appendChild(li);
   }
 }
+
 function updateHeader() {
   document.getElementById('currentCompany').textContent = 'Company: ' + (currentCompany || 'None');
   document.getElementById('currentYear').textContent = 'Year: ' + (currentYear || 'None');
@@ -924,37 +991,107 @@ const defaultGroups = [
   'Indirect Expenses', 'Suspense Account', 'Stock-in-Hand', 
   'Sundry Debtors', 'Sundry Creditors', 'Bank Accounts', 'Cash-in-Hand',
   'Duties & Taxes', 'Provisions', 'Reserves & Surplus', 'Secured Loans', 'Unsecured Loans',
-  'Bank OD A/c'
+  'Bank OD A/c', 'Cost of Goods Sold', 'Stock Adjustment Account' // Added Stock Adjustment Account
 ];
 
 function addYear() {
   if (!currentCompany) return notifyError("Select a company first.");
   const y = document.getElementById('yearInput').value.trim();
-  if (!y.match(/^\d{4}-\d{2}$/)) return notifyError("Year format must beYYYY-YY (e.g., 2024-25).");
+  if (!y.match(/^\d{4}-\d{2}$/)) return notifyError("Year format must be YYYY-YY (e.g., 2024-25).");
   const company = data.companies[currentCompany];
+  if (company.years[y]) return notifyError(`Financial Year "${y}" already exists.`); // Check for existence
+
   if (!company.years[y]) {
     company.years[y] = { 
-      groups: [...defaultGroups], // Add default groups only on new year creation
+      groups: [...new Set([...defaultGroups])], // Ensure unique groups are added
       ledgers: [], 
       vouchers: [], 
       stockGroups: [], 
       stockCategories: [], 
-      godowns: [], // SKUs
+      godowns: [], 
       stockItems: [],
       stockAdjustments: []
     };
+    // Add essential default ledgers if they don't exist
+    const yearLedgers = company.years[y].ledgers;
+    const addDefaultLedger = (name, group) => {
+        if (!yearLedgers.some(l => l.name === name)) {
+            yearLedgers.push({ name: name, group: group, openingBalance: 0 });
+        }
+    };
+    addDefaultLedger('Stock-in-Hand', 'Current Assets');
+    addDefaultLedger('Cost of Goods Sold', 'Indirect Expenses');
+    addDefaultLedger('Stock Adjustment Account', 'Indirect Expenses'); // Ensure this is also added
   }
   currentYear = y;
   save(); renderYears(); updateHeader();
   notifySuccess(`Financial Year "${y}" added and selected!`);
   document.getElementById('yearInput').value = '';
 }
+
 function selectYear(name) {
   currentYear = name;
+  const d = getYearData(); // Get the year data for the newly selected year
+
+  if (d) {
+    // Calculate total opening stock value from stock items
+    let totalOpeningStockValue = 0;
+    if (d.stockItems) {
+      d.stockItems.forEach(item => {
+        totalOpeningStockValue += (item.openingQty || 0) * (item.openingRate || 0);
+      });
+    }
+
+    // Find the Stock-in-Hand ledger and update its opening balance
+    const stockInHandLedger = d.ledgers.find(l => l.name === 'Stock-in-Hand');
+    if (stockInHandLedger) {
+      stockInHandLedger.openingBalance = totalOpeningStockValue;
+    } else {
+      // Fallback: If Stock-in-Hand ledger doesn't exist (shouldn't happen with addYear updates), create it.
+      d.ledgers.push({ name: 'Stock-in-Hand', group: 'Current Assets', openingBalance: totalOpeningStockValue });
+    }
+  }
+
   save(); renderYears(); updateHeader();
   showScreen('voucherScreen'); // Or any other default screen after year selection
   notifySuccess(`Financial Year "${name}" selected.`);
 }
+
+function editYear(oldName) {
+    showInputConfirmation(`Edit Financial Year`, `Enter new name for "${oldName}" (YYYY-YY):`, oldName, (newName) => {
+        newName = newName.trim();
+        if (!newName) {
+            notifyError("New year name cannot be empty.");
+            return;
+        }
+        if (!newName.match(/^\d{4}-\d{2}$/)) {
+            notifyError("New year format must be YYYY-YY (e.g., 2024-25).");
+            return;
+        }
+        if (newName === oldName) {
+            notifyError("New name is the same as the old name.");
+            return;
+        }
+        const company = data.companies[currentCompany];
+        if (company.years[newName]) {
+            notifyError(`Financial Year "${newName}" already exists.`);
+            return;
+        }
+
+        // Perform the rename: copy data to new key, then delete old key
+        company.years[newName] = company.years[oldName];
+        delete company.years[oldName];
+
+        if (currentYear === oldName) {
+            currentYear = newName;
+        }
+        save();
+        renderYears();
+        updateHeader();
+        notifySuccess(`Financial Year "${oldName}" renamed to "${newName}".`);
+    });
+}
+
 function deleteYear(name) {
   showConfirmation(`Are you sure you want to delete financial year "${name}" and all its data within "${currentCompany}"?`, () => {
     const company = data.companies[currentCompany];
@@ -968,6 +1105,7 @@ function deleteYear(name) {
     }
   });
 }
+
 function renderYears() {
   const ul = document.getElementById('yearList');
   ul.innerHTML = '';
@@ -983,18 +1121,25 @@ function renderYears() {
     const btnDiv = document.createElement('div');
     btnDiv.classList.add('action-buttons'); // Add class for styling
     
+    // Select button
+    const selBtn = document.createElement('button');
+    selBtn.textContent = 'Select';
+    selBtn.onclick = (e) => { e.stopPropagation(); selectYear(y); };
+    btnDiv.appendChild(selBtn); 
+
+    // Edit button
+    const editBtn = document.createElement('span');
+    editBtn.textContent = '🪶';
+    editBtn.className = 'edit-btn';
+    editBtn.onclick = (e) => { e.stopPropagation(); editYear(y); };
+    btnDiv.appendChild(editBtn);
+
     // Delete button
     const delBtn = document.createElement('span');
     delBtn.textContent = '⛔';
     delBtn.className = 'delete-btn';
     delBtn.onclick = (e) => { e.stopPropagation(); deleteYear(y); };
-    btnDiv.appendChild(delBtn); // Append delete button first
-
-    // Select button
-    const selBtn = document.createElement('button');
-    selBtn.textContent = 'Select';
-    selBtn.onclick = (e) => { e.stopPropagation(); selectYear(y); };
-    btnDiv.appendChild(selBtn); // Append select button second
+    btnDiv.appendChild(delBtn); 
     
     li.appendChild(btnDiv);
     ul.appendChild(li);
@@ -1115,6 +1260,7 @@ function renderLedgers() {
   const d = getYearData();
   ul.innerHTML = '';
   if (!d) return;
+  const nonDeletableLedgers = ['Stock-in-Hand', 'Cost of Goods Sold', 'Stock Adjustment Account']; // Make these non-deletable
   d.ledgers.sort((a,b) => a.name.localeCompare(b.name)).forEach((l, i) => { // Sort ledgers
     const li = document.createElement('li');
     let ledgerText = `${l.name} (${l.group})`;
@@ -1123,19 +1269,22 @@ function renderLedgers() {
     }
     li.textContent = ledgerText;
 
-    const delBtn = document.createElement('span');
-    delBtn.textContent = '❌';
-    delBtn.className = 'delete-btn';
-    delBtn.onclick = () => {
-      showConfirmation(`Are you sure you want to delete ledger "${l.name}"? This might affect vouchers.`, () => {
-        // Find the original index before sorting if needed for splice, or filter it out
-        const originalIndex = d.ledgers.findIndex(ledger => ledger.name === l.name && ledger.group === l.group);
-        if (originalIndex > -1) d.ledgers.splice(originalIndex, 1);
-        save(); renderLedgers(); populateLedgerDropdownsForVoucher(); showReports();
-        notifySuccess(`Ledger "${l.name}" deleted.`);
-      });
-    };
-    li.appendChild(delBtn);
+    // Only allow deletion of non-default ledgers
+    if (!nonDeletableLedgers.includes(l.name)) {
+      const delBtn = document.createElement('span');
+      delBtn.textContent = '❌';
+      delBtn.className = 'delete-btn';
+      delBtn.onclick = () => {
+        showConfirmation(`Are you sure you want to delete ledger "${l.name}"? This might affect vouchers.`, () => {
+          // Find the original index before sorting if needed for splice, or filter it out
+          const originalIndex = d.ledgers.findIndex(ledger => ledger.name === l.name && ledger.group === l.group);
+          if (originalIndex > -1) d.ledgers.splice(originalIndex, 1);
+          save(); renderLedgers(); populateLedgerDropdownsForVoucher(); showReports();
+          notifySuccess(`Ledger "${l.name}" deleted.`);
+        });
+      };
+      li.appendChild(delBtn);
+    }
     ul.appendChild(li);
   });
   populateLedgerDropdownsForVoucher();
@@ -1175,13 +1324,12 @@ function addVoucher() {
   if (isNaN(amount) || amount <= 0) return notifyError("Amount must be a positive number.");
   if (debit === credit) return notifyError("Debit and Credit ledgers cannot be the same.");
 
-  const debitLedgerExists = d.ledgers.some(l => l.name === debit);
-  const creditLedgerExists = d.ledgers.some(l => l.name === credit);
-  if (!debitLedgerExists) return notifyError(`Debit ledger "${debit}" not found. Add it in Ledgers section.`);
-  if (!creditLedgerExists) return notifyError(`Credit ledger "${credit}" not found. Add it in Ledgers section.`);
+  let actualDebit = debit; // Will hold the ledger actually debited
+  let actualCredit = credit; // Will hold the ledger actually credited
+  let voucherAmount = amount; // Will hold the primary voucher amount
 
-  const newVoucher = { date, type, debit, credit, amount, narration: narration.substring(0, 200) };
   let inventoryUpdatePerformed = false;
+  let costOfGoodsSoldAmount = 0; // To track COGS for sales
 
   if (type === 'Sales' || type === 'Purchase') {
     const stockItemName = document.getElementById('voucherStockItem').value;
@@ -1193,7 +1341,6 @@ function addVoucher() {
     const itemToUpdate = d.stockItems.find(item => item.name === stockItemName);
     if (!itemToUpdate) return notifyError("Selected stock item not found in master.");
 
-    // Ensure currentQty is initialized
     if (itemToUpdate.currentQty === undefined) itemToUpdate.currentQty = itemToUpdate.openingQty;
 
     if (type === 'Sales') {
@@ -1201,15 +1348,57 @@ function addVoucher() {
         return notifyError(`Not enough stock for ${stockItemName}. Available: ${itemToUpdate.currentQty} ${itemToUpdate.unit}.`);
       }
       itemToUpdate.currentQty -= stockQuantity;
+      
+      // For Sales: Additional entry for Cost of Goods Sold
+      costOfGoodsSoldAmount = stockQuantity * (itemToUpdate.openingRate || 0); // Use openingRate as cost for simplicity
+      
+      // Ensure 'Cost of Goods Sold' ledger exists or create it if not in default groups
+      if (!d.ledgers.some(l => l.name === 'Cost of Goods Sold')) {
+          d.ledgers.push({ name: 'Cost of Goods Sold', group: 'Indirect Expenses', openingBalance: 0 });
+          save(); // Save ledgers immediately to ensure it's available for next voucher push
+      }
+
+      // The primary voucher entry for sales is Debit Cash/Debtors, Credit Sales Account
+      // The inventory impact is a separate, hidden ledger entry
+      // No changes needed for original debit/credit for revenue part here.
+
     } else { // Purchase
       itemToUpdate.currentQty += stockQuantity;
+
+      // For Purchase: The amount of the voucher should directly debit 'Stock-in-Hand'
+      // and credit the original 'credit' ledger (e.g., Cash/Bank, Creditors)
+      // The original 'debit' ledger selected (e.g., 'Purchase Accounts') is effectively bypassed for inventory items.
+      actualDebit = 'Stock-in-Hand'; 
+      actualCredit = credit; // Original credit ledger (Cash, Creditors)
+      voucherAmount = amount; // The amount of the purchase
     }
-    newVoucher.inventoryDetails = { itemName: stockItemName, quantity: stockQuantity, value: amount };
+    // Add inventory details to the primary voucher for display purposes
+    // This is stored on the voucher object, but doesn't directly influence ledger entries
+    // in the same way as the main debit/credit.
+    const primaryVoucherInventoryDetails = { itemName: stockItemName, quantity: stockQuantity, value: amount };
+    d.vouchers.push({ date, type, debit: actualDebit, credit: actualCredit, amount: voucherAmount, narration: narration.substring(0, 200), inventoryDetails: primaryVoucherInventoryDetails });
     inventoryUpdatePerformed = true;
+  } else {
+    // For non-Sales/Purchase vouchers, just add the voucher as is
+    d.vouchers.push({ date, type, debit, credit, amount, narration: narration.substring(0, 200) });
   }
 
-  d.vouchers.push(newVoucher);
-  save(); renderVouchers(); showReports(); renderDaybook();
+  // If it was a sale, add the COGS entry separately
+  if (type === 'Sales' && costOfGoodsSoldAmount > 0) {
+      d.vouchers.push({
+          date: date,
+          type: 'Journal (COGS)', // Specific type for clarity
+          debit: 'Cost of Goods Sold',
+          credit: 'Stock-in-Hand',
+          amount: costOfGoodsSoldAmount,
+          narration: `Cost of goods sold for ${stockItemName} (Qty: ${stockQuantity})`
+      });
+  }
+
+  save();
+  renderVouchers();
+  showReports();
+  renderDaybook();
   
   if (inventoryUpdatePerformed) {
     renderStockItems(); // Refresh stock master view
@@ -1249,34 +1438,47 @@ function renderVouchers() {
     delBtn.className = 'delete-btn';
     delBtn.onclick = () => {
       showConfirmation(`Are you sure you want to delete this ${v.type} voucher?`, () => {
-        // Since we sorted, find the original index using a unique property or recreation logic
-        const voucherToDelete = d.vouchers.find(
-            (item, i) => item.date === v.date && item.type === v.type && 
+        // Find the original index using a unique property or recreation logic
+        // Using a combination of properties to find the exact voucher to delete
+        const voucherToDeleteIndex = d.vouchers.findIndex(
+            (item) => item.date === v.date && item.type === v.type && 
                          item.debit === v.debit && item.credit === v.credit && 
-                         item.amount === v.amount && i === index // Using index as a tie-breaker, but not ideal if data can be reordered elsewhere
+                         item.amount === v.amount && item.narration === v.narration
         );
-        const originalIndex = d.vouchers.indexOf(voucherToDelete);
 
-        if (originalIndex === -1) {
+        if (voucherToDeleteIndex === -1) {
             console.error("Voucher not found for deletion. This should not happen.");
             notifyError("Voucher not found for deletion.");
             return;
         }
 
         // Reverse stock changes if it was a Sales/Purchase voucher
-        if (voucherToDelete.inventoryDetails && (voucherToDelete.type === 'Sales' || voucherToDelete.type === 'Purchase')) {
-            const itemToUpdate = d.stockItems.find(item => item.name === voucherToDelete.inventoryDetails.itemName);
+        if (v.inventoryDetails && (v.type === 'Sales' || v.type === 'Purchase')) {
+            const itemToUpdate = d.stockItems.find(item => item.name === v.inventoryDetails.itemName);
             if (itemToUpdate) {
                 if (itemToUpdate.currentQty === undefined) itemToUpdate.currentQty = itemToUpdate.openingQty; // Ensure initialized
-                if (voucherToDelete.type === 'Sales') {
-                    itemToUpdate.currentQty += voucherToDelete.inventoryDetails.quantity; // Add back for Sales deletion
+                if (v.type === 'Sales') {
+                    itemToUpdate.currentQty += v.inventoryDetails.quantity; // Add back for Sales deletion
+                    // Also find and delete the associated COGS journal entry if it exists
+                    const cogsVoucherIndex = d.vouchers.findIndex(
+                        (item) => item.type === 'Journal (COGS)' &&
+                                   item.debit === 'Cost of Goods Sold' &&
+                                   item.credit === 'Stock-in-Hand' &&
+                                   item.narration.includes(v.inventoryDetails.itemName) &&
+                                   item.date === v.date &&
+                                   item.amount === (v.inventoryDetails.quantity * (itemToUpdate.openingRate || 0))
+                    );
+                    if (cogsVoucherIndex > -1) {
+                        d.vouchers.splice(cogsVoucherIndex, 1);
+                    }
+
                 } else { // Purchase
-                    itemToUpdate.currentQty -= voucherToDelete.inventoryDetails.quantity; // Subtract for Purchase deletion
+                    itemToUpdate.currentQty -= v.inventoryDetails.quantity; // Subtract for Purchase deletion
                 }
             }
         }
         
-        d.vouchers.splice(originalIndex, 1);
+        d.vouchers.splice(voucherToDeleteIndex, 1);
         save(); renderVouchers(); showReports(); renderDaybook();
         renderStockItems(); // Refresh stock master view
         populateVoucherStockItemDropdown(); // Refresh dropdown in voucher screen
@@ -1519,7 +1721,42 @@ function performStockAdjustment() {
         newQty: itemToAdjust.currentQty
     });
 
+    // Also create a journal voucher for the stock adjustment to affect the Stock-in-Hand ledger
+    // Debit Stock-in-Hand for positive adjustments, Credit for negative
+    const adjustmentType = adjustmentQty > 0 ? 'Debit' : 'Credit';
+    const adjustmentNarration = `Stock adjustment for ${itemName}: ${reason}.`;
+    const adjustmentAmount = Math.abs(adjustmentQty * (itemToAdjust.openingRate || 0)); // Use opening rate as cost for adjustment value
+
+    if (adjustmentAmount > 0) { // Only create voucher if there's a value impact
+        if (adjustmentType === 'Debit') {
+            d.vouchers.push({
+                date: new Date().toISOString().split('T')[0],
+                type: 'Journal (Stock Adj)',
+                debit: 'Stock-in-Hand',
+                credit: 'Stock Adjustment Account', // You might want a specific ledger for adjustments
+                amount: adjustmentAmount,
+                narration: adjustmentNarration
+            });
+        } else { // Credit
+            d.vouchers.push({
+                date: new Date().toISOString().split('T')[0],
+                type: 'Journal (Stock Adj)',
+                debit: 'Stock Adjustment Account', // You might want a specific ledger for adjustments
+                credit: 'Stock-in-Hand',
+                amount: adjustmentAmount,
+                narration: adjustmentNarration
+            });
+        }
+    }
+    // Ensure 'Stock Adjustment Account' ledger exists or create it
+    if (!d.ledgers.some(l => l.name === 'Stock Adjustment Account')) {
+        d.ledgers.push({ name: 'Stock Adjustment Account', group: 'Indirect Expenses', openingBalance: 0 }); // Or appropriate group
+        save(); // Save ledgers immediately
+    }
+
+
     save(); renderStockItems(); populateVoucherStockItemDropdown(); populateAdjustmentItemDropdown(); renderStockAdjustmentLog();
+    showReports(); // Update reports after adjustment
     notifySuccess("Stock adjusted successfully!");
     // Clear form
     document.getElementById('adjustmentQuantity').value = '';
@@ -1591,7 +1828,7 @@ function showReports() {
     if (l.openingBalance && l.openingBalance !== 0) {
         // Determine if opening balance is debit or credit based on group type
         const group = l.group;
-        const isAssetOrExpense = ['Fixed Assets', 'Investments', 'Current Assets', 'Direct Expenses', 'Indirect Expenses', 'Cash-in-Hand', 'Bank Accounts', 'Sundry Debtors'].includes(group);
+        const isAssetOrExpense = ['Fixed Assets', 'Investments', 'Current Assets', 'Direct Expenses', 'Indirect Expenses', 'Cash-in-Hand', 'Bank Accounts', 'Sundry Debtors', 'Cost of Goods Sold', 'Stock-in-Hand', 'Stock Adjustment Account'].includes(group); // Added Stock-in-Hand and Stock Adjustment Account explicitly here
         const isLiabilityOrIncome = ['Capital Account', 'Loans (Liability)', 'Current Liabilities', 'Sales Accounts', 'Direct Incomes', 'Indirect Incomes', 'Sundry Creditors', 'Duties & Taxes', 'Provisions', 'Reserves & Surplus', 'Secured Loans', 'Unsecured Loans', 'Bank OD A/c'].includes(group);
 
         if (isAssetOrExpense) {
@@ -1614,17 +1851,17 @@ function showReports() {
   d.vouchers.forEach(v => {
     if(tb[v.debit]) tb[v.debit].debit += v.amount; 
     else {
-        // Handle case where ledger was deleted but vouchers exist
-        const deletedLedger = d.ledgers.find(l => l.name === v.debit);
-        if (deletedLedger) tb[v.debit] = {debit: v.amount, credit: 0, group: deletedLedger.group};
+        // Handle case where ledger was deleted or not yet created but vouchers exist
+        const associatedLedger = d.ledgers.find(l => l.name === v.debit);
+        if (associatedLedger) tb[v.debit] = {debit: v.amount, credit: 0, group: associatedLedger.group};
         else tb[v.debit] = {debit: v.amount, credit: 0, group: 'Unknown'}; // Fallback
     }
 
     if(tb[v.credit]) tb[v.credit].credit += v.amount;
     else {
-        // Handle case where ledger was deleted but vouchers exist
-        const deletedLedger = d.ledgers.find(l => l.name === v.credit);
-        if (deletedLedger) tb[v.credit] = {debit: 0, credit: v.amount, group: deletedLedger.group};
+        // Handle case where ledger was deleted or not yet created but vouchers exist
+        const associatedLedger = d.ledgers.find(l => l.name === v.credit);
+        if (associatedLedger) tb[v.credit] = {debit: 0, credit: v.amount, group: associatedLedger.group};
         else tb[v.credit] = {debit: 0, credit: v.amount, group: 'Unknown'}; // Fallback
     }
   });
@@ -1653,8 +1890,8 @@ function showReports() {
 
   // P&L and Balance Sheet
   const incomeGroups = ['Sales Accounts', 'Direct Incomes', 'Indirect Incomes'];
-  const expenseGroups = ['Purchase Accounts', 'Direct Expenses', 'Indirect Expenses'];
-  const assetGroups = ['Fixed Assets', 'Investments', 'Current Assets', 'Cash-in-Hand', 'Bank Accounts', 'Sundry Debtors'];
+  const expenseGroups = ['Purchase Accounts', 'Direct Expenses', 'Indirect Expenses', 'Cost of Goods Sold', 'Stock Adjustment Account']; // Added COGS and Stock Adjustment Account to expenses
+  const assetGroups = ['Fixed Assets', 'Investments', 'Current Assets', 'Cash-in-Hand', 'Bank Accounts', 'Sundry Debtors', 'Stock-in-Hand']; // Stock-in-Hand is now an asset ledger
   const liabilityGroups = ['Capital Account', 'Loans (Liability)', 'Current Liabilities', 'Sundry Creditors', 'Duties & Taxes', 'Provisions', 'Reserves & Surplus', 'Secured Loans', 'Unsecured Loans', 'Bank OD A/c'];
 
   let income = 0;
@@ -1673,25 +1910,21 @@ function showReports() {
       income += -balance; // Income groups typically have credit balances, so negative balance is income
     } else if (expenseGroups.includes(group)) {
       expense += balance; // Expense groups typically have debit balances
-    } else if (assetGroups.includes(group) && group !== 'Stock-in-Hand') { // Stock-in-Hand is handled separately for closing stock
+    } else if (assetGroups.includes(group)) { // Stock-in-Hand is now included here
       assets += balance; // Assets have debit balances
     } else if (liabilityGroups.includes(group)) {
       liabilities += -balance; // Liabilities have credit balances, so negative balance is liability
     }
   }
 
-  // Calculate closing stock value (from stock master)
-  let stockValue = 0;
+  // Calculate closing stock value (from stock master) for Inventory Report display
+  let currentTotalStockValue = 0;
   if (d.stockItems) {
     d.stockItems.forEach(item => {
         const currentQty = item.currentQty !== undefined ? item.currentQty : item.openingQty;
-        stockValue += currentQty * item.openingRate;
+        currentTotalStockValue += currentQty * (item.openingRate || 0); // Use 0 if openingRate is undefined
     });
   }
-
-  // Add closing stock to assets
-  assets += stockValue;
-
 
   const profit = income - expense;
   let netProfitStr = `Net ${profit >= 0 ? 'Profit' : 'Loss'}`;
@@ -1710,7 +1943,7 @@ function showReports() {
 
 
   document.getElementById('balanceSheet').innerHTML = `<h4>Balance Sheet</h4>
-    <p>Total Assets (incl. Closing Stock ₹${stockValue.toFixed(2)}): ₹${assets.toFixed(2)}</p>
+    <p>Total Assets: ₹${assets.toFixed(2)}</p>
     <p>Total Liabilities (incl. ${netProfitStr} ₹${Math.abs(profit).toFixed(2)}): ₹${liabilities.toFixed(2)}</p>` +
     (Math.abs(assets - liabilities) > 0.01 ? `<p style="color:red;"><b>Balance Sheet does not tally! Difference: ₹${Math.abs(assets - liabilities).toFixed(2)}</b></p>` : `<p style="color:green;"><b>Balance Sheet Tally!</b></p>`);
 
@@ -1720,9 +1953,9 @@ function showReports() {
   if (d.stockItems) {
     d.stockItems.forEach(item => {
       const currentQty = item.currentQty !== undefined ? item.currentQty : item.openingQty;
-      const val = currentQty * item.openingRate;
+      const val = currentQty * (item.openingRate || 0);
       totalInvVal += val;
-      invHtml += `<tr><td>${item.name}</td><td>${currentQty}</td><td>${item.unit}</td><td>${item.openingRate.toFixed(2)}</td><td>${val.toFixed(2)}</td></tr>`;
+      invHtml += `<tr><td>${item.name}</td><td>${currentQty}</td><td>${item.unit}</td><td>${(item.openingRate || 0).toFixed(2)}</td><td>${val.toFixed(2)}</td></tr>`;
     });
   }
   invHtml += `<tr><td colspan="4"><b>Total Inventory Value</b></td><td><b>${totalInvVal.toFixed(2)}</b></td></tr>`;
@@ -1855,6 +2088,68 @@ function showConfirmation(message, onConfirmCallback) {
         dialog.style.transform = 'translateY(0)';
     });
 }
+
+// Custom Input Confirmation Dialog (for edit function)
+function showInputConfirmation(title, message, defaultValue, onConfirmCallback) {
+    const existingOverlay = document.querySelector('.confirmation-overlay');
+    if (existingOverlay) {
+        existingOverlay.remove();
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'confirmation-overlay';
+
+    const dialog = document.createElement('div');
+    dialog.className = 'confirmation-dialog';
+
+    const h4 = document.createElement('h4');
+    h4.textContent = title;
+    dialog.appendChild(h4);
+
+    const p = document.createElement('p');
+    p.textContent = message;
+    dialog.appendChild(p);
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = defaultValue;
+    input.placeholder = 'Enter new name';
+    dialog.appendChild(input);
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'buttons';
+
+    const okButton = document.createElement('button');
+    okButton.textContent = 'Save';
+    okButton.className = 'confirm-yes'; /* Reusing style for positive action */
+    okButton.onclick = () => {
+        onConfirmCallback(input.value);
+        document.body.removeChild(overlay);
+    };
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'confirm-no';
+    cancelButton.onclick = () => {
+        document.body.removeChild(overlay);
+    };
+
+    buttonContainer.appendChild(okButton);
+    buttonContainer.appendChild(cancelButton);
+    dialog.appendChild(buttonContainer);
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    // Focus on input
+    input.focus();
+
+    // Animate in
+    requestAnimationFrame(() => {
+        overlay.style.opacity = '1';
+        dialog.style.transform = 'translateY(0)';
+    });
+}
+
 
 // Function to refresh the app code, bypassing browser cache
 function refreshApp() {
